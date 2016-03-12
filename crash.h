@@ -62,7 +62,7 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
       stack_end2 = 0x3fffffb0;
   }
 
-  sprintf(spi, "sp: %08x end: %08x offset: %04x\n", sp, stack_end2, offset);
+  sprintf(spi, "sp: %08x end: %08x offset: %04x\n", stack-offset, stack_end2, offset);
 
   if (rst_info->reason == REASON_EXCEPTION_RST) {
     strcat(result, exception);
