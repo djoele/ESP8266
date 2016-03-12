@@ -1,29 +1,24 @@
-String getStack(uint32_t starter, uint32_t ender){
+String getStack(uint32_t starter, uint32_t ender, uint32_t offset){
   char stack_self[1000] = "";
   char stack_self2[100];
   const char stack_begin[13] = ">>>stack>>>\n";
   const char stack_end[13] = ">>>stack>>>\n";
   strcat(stack_self, stack_begin);
 
-  sprintf(stack_self, "starter: %08x end: %08x\n", starter, ender);
-  Serial.println(String("starter: ") + stack_self);
+  sprintf(stack_self, "starter: %08x end: %08x offset: %08x\n", starter, ender, offset);
+  //Serial.println(String("starter: ") + stack_self);
   uint32_t pos = starter;
-  for (pos; pos < ender; pos += 0x10) {
+  for (pos; pos < ender; pos += offset) {
       uint32_t* values = (uint32_t*)(pos);
 
       // rough indicator: stack frames usually have SP saved as the second word
       bool looksLikeStackFrame = (values[2] == pos + 0x10);
 
       sprintf(stack_self2, "%08x:  %08x %08x %08x %08x %c\n", pos, values[0], values[1], values[2], values[3], (looksLikeStackFrame)?'<':' ');
-      delay(0);
-     //serverClient.println(String("stackje: ") + stack_self2);
-      //Serial.println(String("stackje: ") + pos);
-      //Serial.println(String("stackje: ") + stack_self);
       strcat(stack_self, stack_self2);
+      ESP.wdtFeed();
   } 
   strcat(stack_self, stack_end);
-  //Serial.println(String("temp: ") + stack_self);
-  //serverClient.println(String("temp: ") + stack_self);
 
   String res;
   res = stack_self;
@@ -76,7 +71,7 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   strcat(result, nctx);
   strcat(result, spi);
 
-  strcpy(buf2, getStack(sp + offset, stack_end2).c_str());
+  strcpy(buf2, getStack(stack, stack_end2, offset).c_str());
   strcat(result, buf2);
   strcpy(buf,result);
 

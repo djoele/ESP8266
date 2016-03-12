@@ -42,13 +42,6 @@ void setup() {
   serverClient.println(String("eeprom read: "));
   serverClient.println(buf);
 
-  
-  //a = '3fffe010';
-  //b = '3ffee610';
-  //String stack = getStack(a, b);
-  //Serial.println(String("Stack: ") + stack);
-  //serverClient.println(String("Stack: ") + stack);
-
   if(counter<0){
     ESP.restart();
   }
