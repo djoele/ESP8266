@@ -1,14 +1,13 @@
 String getStack(uint32_t starter, uint32_t ender, uint32_t offset){
   char stack_self[1000] = "";
   char stack_self2[100];
-  const char stack_begin[13] = ">>>stack>>>\n";
-  const char stack_end[13] = ">>>stack>>>\n";
+  const char stack_begin[15] = "\n>>>stack>>>\n";
+  const char stack_end[13] = "<<<stack<<<\n";
   strcat(stack_self, stack_begin);
-
-  sprintf(stack_self, "starter: %08x end: %08x offset: %08x\n", starter, ender, offset);
+  ESP.wdtFeed();
+  //sprintf(stack_self, "starter: %08x end: %08x offset: %08x\n", starter, ender, offset);
   //Serial.println(String("starter: ") + stack_self);
-  uint32_t pos = starter;
-  for (pos; pos < ender; pos += offset) {
+  for (uint32_t pos = starter; pos < ender; pos += 0x10) {
       uint32_t* values = (uint32_t*)(pos);
 
       // rough indicator: stack frames usually have SP saved as the second word
@@ -19,7 +18,7 @@ String getStack(uint32_t starter, uint32_t ender, uint32_t offset){
       ESP.wdtFeed();
   } 
   strcat(stack_self, stack_end);
-
+  ESP.wdtFeed();
   String res;
   res = stack_self;
   return res;
