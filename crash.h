@@ -28,7 +28,7 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   
   if (rst_info->reason == REASON_EXCEPTION_RST) {
      sprintf(exception,"\nException (%i):\nepc1=0x%08x epc2=0x%08x epc3=0x%08x excvaddr=0x%08x depc=0x%08x\n",
-            rst_info->exccause, rst_info->epc1, rst_info->epc2, rst_info->epc3, rst_info->excvaddr, rst_info->depc);
+            rst_info->exccause, rst_info->epc1, rst_info->epc2, rst_info->epc3, rst_info->excvaddr, rst_info->depc);        
   }
     
   uint32_t cont_stack_start = (uint32_t) &(g_cont.stack);
@@ -56,7 +56,9 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
 
   sprintf(spi, "sp: %08x end: %08x offset: %04x\n", sp, stack_end, offset);
 
-  //strcat(result, exception);
+  if (rst_info->reason == REASON_EXCEPTION_RST) {
+    strcat(result, exception);
+  }
   strcat(result, cont);
   strcat(result, nctx);
   strcat(result, spi);

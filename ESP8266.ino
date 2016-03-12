@@ -88,12 +88,10 @@ void loop() {
   handleTelnet();
   
   if (energiepuls == 1){
-    uint32_t a = 0;
-    a = 3fffdf00;
-    uint32_t b= 0;
-    b = 3fffffb0;
-    String stack = getStack(a, b);
-    serverClient.println(String("Stack: ") + stack);
+    //uint32_t a = 3fffdf00;
+    //uint32_t b=3fffffb0;
+    //String stack = getStack(a, b);
+    //serverClient.println(String("Stack: ") + stack);
     eeprom_read_string(0, buf, EEPROM_MAX_ADDR);
     Serial.println(String("eeprom read: "));
     Serial.println(buf);
