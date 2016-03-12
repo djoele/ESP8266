@@ -23,12 +23,12 @@
 
 void setup() {
   EEPROM.begin(512);
+  Serial.begin(115200);
   
   //generate base64 string from credentials, for http basic auth
   memset(unameenc,0,sizeof(unameenc));
   base64_encode(unameenc, uname, strlen(uname));
 
-  Serial.begin(115200);
   connectWifi();
   WiFi.onEvent(WiFiEvent);
 
@@ -36,15 +36,17 @@ void setup() {
   
   uploadError();
 
-  //eeprom_read_string(0, buf, EEPROM_MAX_ADDR);
-  //Serial.println(String("eeprom read: "));
-  //Serial.println(buf);
-  //serverClient.println(String("eeprom read: "));
-  //serverClient.println(buf);
+  eeprom_read_string(0, buf, EEPROM_MAX_ADDR);
+  Serial.println(String("eeprom read: "));
+  Serial.println(buf);
+  serverClient.println(String("eeprom read: "));
+  serverClient.println(buf);
 
-  //a = '3fffdf00';
-  //b = '3fffffb0';
+  
+  //a = '3fffe010';
+  //b = '3ffee610';
   //String stack = getStack(a, b);
+  //Serial.println(String("Stack: ") + stack);
   //serverClient.println(String("Stack: ") + stack);
 
   if(counter<0){

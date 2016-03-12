@@ -1,30 +1,36 @@
-String getStack(uint32_t start, uint32_t end){
-  char stack_self[700] = "";
+String getStack(uint32_t starter, uint32_t ender){
+  char stack_self[1000] = "";
   char stack_self2[100];
   const char stack_begin[13] = ">>>stack>>>\n";
   const char stack_end[13] = ">>>stack>>>\n";
-  serverClient.println(String(">>>stack>>>\n"));
-  //strcat(stack_self, stack_begin);
-  for (uint32_t pos = start; pos < end; pos += 0x10) {
+  strcat(stack_self, stack_begin);
+
+  sprintf(stack_self, "starter: %08x end: %08x\n", starter, ender);
+  Serial.println(String("starter: ") + stack_self);
+  uint32_t pos = starter;
+  for (pos; pos < ender; pos += 0x10) {
       uint32_t* values = (uint32_t*)(pos);
 
       // rough indicator: stack frames usually have SP saved as the second word
       bool looksLikeStackFrame = (values[2] == pos + 0x10);
 
       sprintf(stack_self2, "%08x:  %08x %08x %08x %08x %c\n", pos, values[0], values[1], values[2], values[3], (looksLikeStackFrame)?'<':' ');
-      serverClient.println(String("stackje: ") + stack_self2);
-      //strcat(stack_self, stack_self2);
-  }
-  serverClient.println(String(">>>stack>>>\n"));  
-  //strcat(stack_self, stack_end);
-  return stack_self;
+      delay(0);
+     //serverClient.println(String("stackje: ") + stack_self2);
+      //Serial.println(String("stackje: ") + pos);
+      //Serial.println(String("stackje: ") + stack_self);
+      strcat(stack_self, stack_self2);
+  } 
+  strcat(stack_self, stack_end);
+  //Serial.println(String("temp: ") + stack_self);
+  //serverClient.println(String("temp: ") + stack_self);
+
+  String res;
+  res = stack_self;
+  return res;
 }
+
 extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack, uint32_t stack_end ){
-  // write a 0 to all 512 bytes of the EEPROM
-  //for (int i = 0; i < 512; i++){
-    //EEPROM.write(i, 0);
-  //}
-   
   register uint32_t sp asm("a1");
   cont_t g_cont __attribute__ ((aligned (16)));
   char result[2000];
@@ -40,7 +46,7 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
     
   uint32_t cont_stack_start = (uint32_t) &(g_cont.stack);
   uint32_t cont_stack_end = (uint32_t) g_cont.stack_end;
-  //uint32_t stack_end;
+  uint32_t stack_end2 = 0;
 
   uint32_t offset = 0;
   if (rst_info->reason == REASON_SOFT_WDT_RST) {
@@ -54,14 +60,14 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   }
   if (sp > cont_stack_start && sp < cont_stack_end) {
       sprintf(nctx, "\nctx: cont \n");
-      stack_end = cont_stack_end;
+      stack_end2 = cont_stack_end;
   }
   else {
       sprintf(nctx, "\nctx: sys \n");
-      stack_end = 0x3fffffb0;
+      stack_end2 = 0x3fffffb0;
   }
 
-  sprintf(spi, "sp: %08x end: %08x offset: %04x\n", sp, stack_end, offset);
+  sprintf(spi, "sp: %08x end: %08x offset: %04x\n", sp, stack_end2, offset);
 
   if (rst_info->reason == REASON_EXCEPTION_RST) {
     strcat(result, exception);
@@ -69,10 +75,12 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   strcat(result, cont);
   strcat(result, nctx);
   strcat(result, spi);
-  
-  //strcpy(buf2, getStack(sp + offset, stack_end).c_str());
-  //strcat(result, buf2);
+
+  strcpy(buf2, getStack(sp + offset, stack_end2).c_str());
+  strcat(result, buf2);
   strcpy(buf,result);
+
+  //eeprom_erase_all();
   eeprom_write_string(0, buf);
   EEPROM.commit();
 } 

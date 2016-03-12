@@ -105,3 +105,11 @@ boolean eeprom_read_string(int addr, char* buffer, int bufSize) {
 
   return true;
 }
+
+void eeprom_erase_all(byte b = 0xFF) {
+  int i;
+
+  for (i = EEPROM_MIN_ADDR; i <= EEPROM_MAX_ADDR; i++) {
+    EEPROM.write(i, b);
+  }
+}
