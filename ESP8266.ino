@@ -15,11 +15,11 @@
 #include <string.h>
 #include "cont.h"
 #include "constants.h"
+#include "eeprom.h"
+#include "crash.h"
 #include "functies.h"
 #include "isr.h"
 #include "Base64.h"
-#include "eeprom.h"
-#include "crash.h"
 
 void setup() {
   EEPROM.begin(512);
@@ -35,6 +35,17 @@ void setup() {
   determineStartValues();
   
   uploadError();
+
+  //eeprom_read_string(0, buf, EEPROM_MAX_ADDR);
+  //Serial.println(String("eeprom read: "));
+  //Serial.println(buf);
+  //serverClient.println(String("eeprom read: "));
+  //serverClient.println(buf);
+
+  //a = '3fffdf00';
+  //b = '3fffffb0';
+  //String stack = getStack(a, b);
+  //serverClient.println(String("Stack: ") + stack);
 
   if(counter<0){
     ESP.restart();
@@ -88,16 +99,6 @@ void loop() {
   handleTelnet();
   
   if (energiepuls == 1){
-    //uint32_t a = 3fffdf00;
-    //uint32_t b=3fffffb0;
-    //String stack = getStack(a, b);
-    //serverClient.println(String("Stack: ") + stack);
-    eeprom_read_string(0, buf, EEPROM_MAX_ADDR);
-    Serial.println(String("eeprom read: "));
-    Serial.println(buf);
-    serverClient.println(String("eeprom read: "));
-    serverClient.println(buf);
-    
     energiepuls = 0;
     counter++;
     Serial.println(String("Energiepuls gedetecteerd: ") + counter);

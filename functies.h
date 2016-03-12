@@ -154,13 +154,7 @@ void replaceSpaces(const char* string,char* newstring) {
   }
 }
 
-void uploadError() {
-  //value = readEeprom();
-
-  Serial.print("\t");
-  //Serial.print(value, DEC);
-  Serial.println();
-  
+void uploadError() {    
   const char* rinfo;
   char rinfo2[1000];
   rinfo = ESP.getResetInfo().c_str();

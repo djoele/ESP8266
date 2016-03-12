@@ -1,6 +1,10 @@
 String getStack(uint32_t start, uint32_t end){
-  char stack_self[500] = "Stack trace: ";
-  char stack_self2[50];
+  char stack_self[700] = "";
+  char stack_self2[100];
+  const char stack_begin[13] = ">>>stack>>>\n";
+  const char stack_end[13] = ">>>stack>>>\n";
+  serverClient.println(String(">>>stack>>>\n"));
+  //strcat(stack_self, stack_begin);
   for (uint32_t pos = start; pos < end; pos += 0x10) {
       uint32_t* values = (uint32_t*)(pos);
 
@@ -8,8 +12,11 @@ String getStack(uint32_t start, uint32_t end){
       bool looksLikeStackFrame = (values[2] == pos + 0x10);
 
       sprintf(stack_self2, "%08x:  %08x %08x %08x %08x %c\n", pos, values[0], values[1], values[2], values[3], (looksLikeStackFrame)?'<':' ');
-      strcat(stack_self, stack_self2);
-    }
+      serverClient.println(String("stackje: ") + stack_self2);
+      //strcat(stack_self, stack_self2);
+  }
+  serverClient.println(String(">>>stack>>>\n"));  
+  //strcat(stack_self, stack_end);
   return stack_self;
 }
 extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack, uint32_t stack_end ){
@@ -21,9 +28,9 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   register uint32_t sp asm("a1");
   cont_t g_cont __attribute__ ((aligned (16)));
   char result[2000];
-  char exception[1350];
-  char cont[50];
-  char nctx[50];
+  char exception[1050];
+  char cont[14];
+  char nctx[14];
   char spi[50];
   
   if (rst_info->reason == REASON_EXCEPTION_RST) {
@@ -63,8 +70,8 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   strcat(result, nctx);
   strcat(result, spi);
   
-  //strcpy(buf, getStack(sp + offset, stack_end).c_str());
-  //strcat(result, buf);
+  //strcpy(buf2, getStack(sp + offset, stack_end).c_str());
+  //strcat(result, buf2);
   strcpy(buf,result);
   eeprom_write_string(0, buf);
   EEPROM.commit();
