@@ -60,8 +60,8 @@ unsigned long startTimeWifi = millis();
 
 const int EEPROM_MIN_ADDR = 0;
 const int EEPROM_MAX_ADDR = 511;
-char buf[10000];
-char buf2[4000];
+char buf[2000];
+char buf2[700];
 
 uint32_t a;
 uint32_t b;
