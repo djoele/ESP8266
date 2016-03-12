@@ -1,12 +1,10 @@
 String getStack(uint32_t starter, uint32_t ender, uint32_t offset){
   char stack_self[1000] = "";
-  char stack_self2[100];
+  char stack_self2[50];
   const char stack_begin[15] = "\n>>>stack>>>\n";
   const char stack_end[13] = "<<<stack<<<\n";
   strcat(stack_self, stack_begin);
   ESP.wdtFeed();
-  //sprintf(stack_self, "starter: %08x end: %08x offset: %08x\n", starter, ender, offset);
-  //Serial.println(String("starter: ") + stack_self);
   for (uint32_t pos = starter; pos < ender; pos += 0x10) {
       uint32_t* values = (uint32_t*)(pos);
 
@@ -14,8 +12,10 @@ String getStack(uint32_t starter, uint32_t ender, uint32_t offset){
       bool looksLikeStackFrame = (values[2] == pos + 0x10);
 
       sprintf(stack_self2, "%08x:  %08x %08x %08x %08x %c\n", pos, values[0], values[1], values[2], values[3], (looksLikeStackFrame)?'<':' ');
+      Serial.println(String("") + stack_self2);
       strcat(stack_self, stack_self2);
       ESP.wdtFeed();
+      delay(0);
   } 
   strcat(stack_self, stack_end);
   ESP.wdtFeed();
@@ -25,10 +25,11 @@ String getStack(uint32_t starter, uint32_t ender, uint32_t offset){
 }
 
 extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack, uint32_t stack_end ){
+  ESP.wdtDisable();
   register uint32_t sp asm("a1");
   cont_t g_cont __attribute__ ((aligned (16)));
-  char result[2000];
-  char exception[1050];
+  char result[4000];
+  char exception[1000];
   char cont[14];
   char nctx[14];
   char spi[50];
