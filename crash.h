@@ -1,24 +1,20 @@
 String getStack(uint32_t starter, uint32_t ender, uint32_t offset){
-  char stack_self[1000] = "";
-  char stack_self2[100];
+  char stack_self[1200] = "";
+  char stack_self2[46];
   const char stack_begin[15] = "\n>>>stack>>>\n";
   const char stack_end[13] = "<<<stack<<<\n";
   strcat(stack_self, stack_begin);
-  ESP.wdtFeed();
-  //sprintf(stack_self, "starter: %08x end: %08x offset: %08x\n", starter, ender, offset);
-  //Serial.println(String("starter: ") + stack_self);
+  
   for (uint32_t pos = starter; pos < ender; pos += 0x10) {
       uint32_t* values = (uint32_t*)(pos);
 
       // rough indicator: stack frames usually have SP saved as the second word
       bool looksLikeStackFrame = (values[2] == pos + 0x10);
-
+      Serial.println("pos" + pos);
       sprintf(stack_self2, "%08x:  %08x %08x %08x %08x %c\n", pos, values[0], values[1], values[2], values[3], (looksLikeStackFrame)?'<':' ');
       strcat(stack_self, stack_self2);
-      ESP.wdtFeed();
   } 
   strcat(stack_self, stack_end);
-  ESP.wdtFeed();
   String res;
   res = stack_self;
   return res;
@@ -74,7 +70,7 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   strcat(result, buf2);
   strcpy(buf,result);
 
-  //eeprom_erase_all();
+  eeprom_erase_all();
   eeprom_write_string(0, buf);
   EEPROM.commit();
 } 

@@ -37,9 +37,9 @@ void setup() {
   uploadError();
 
   eeprom_read_string(0, buf, EEPROM_MAX_ADDR);
-  Serial.println(String("eeprom read: "));
+  Serial.print(String("eeprom read: "));
   Serial.println(buf);
-  serverClient.println(String("eeprom read: "));
+  serverClient.print(String("eeprom read: "));
   serverClient.println(buf);
 
   if(counter<0){
