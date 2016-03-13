@@ -4,6 +4,9 @@
 #include <WiFiClient.h>
 #include <WiFiClientSecure.h>
 #include <WiFiUdp.h>
+#include <ESP8266WiFiMulti.h>
+#include <ESP8266HTTPClient.h>
+#include <ESP8266httpUpdate.h>
 #include <Time.h>
 #include <TimeLib.h>
 #include <TimeAlarms.h>
@@ -20,6 +23,7 @@
 #include "functies.h"
 #include "isr.h"
 #include "Base64.h"
+#include "update.h"
 
 void setup() {
   EEPROM.begin(4096);
@@ -55,6 +59,7 @@ void setup() {
   Alarm.timerRepeat(55, uploadEnergie1);
   Alarm.timerRepeat(300, uploadWater);
   Alarm.timerRepeat(350, uploadGas);
+  Alarm.timerRepeat(30, doUpdate);
 
   ArduinoOTA.setPort(8266);
   ArduinoOTA.setHostname("ESP8266-Meterkast");

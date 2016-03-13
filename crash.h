@@ -29,7 +29,7 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   char spi[50];
   
   if (rst_info->reason == REASON_EXCEPTION_RST) {
-     sprintf(exception,"\nException (%i):\nepc1=0x%08x epc2=0x%08x epc3=0x%08x excvaddr=0x%08x depc=0x%08x\n",
+     sprintf(exception,"Exception (%i):\nepc1=0x%08x epc2=0x%08x epc3=0x%08x excvaddr=0x%08x depc=0x%08x\n",
             rst_info->exccause, rst_info->epc1, rst_info->epc2, rst_info->epc3, rst_info->excvaddr, rst_info->depc);        
   }
     

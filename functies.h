@@ -214,9 +214,13 @@ void uploadStack(){
   
   String stack = urlencode(buf);
   const char find[4] = "ctx";
+  const char find2[10] = "Exception";
   const char * stackkie = stack.c_str();
   char *ret;
-  ret = strstr(stackkie, find);
+  ret = strstr(stackkie, find2);
+  if (ret==NULL){
+    ret = strstr(stackkie, find);
+  }
   Serial.println(ret);
   
   Serial.println("****************************STACK AFTER URLENCODE********************************");
