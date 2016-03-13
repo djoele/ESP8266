@@ -22,7 +22,7 @@
 #include "Base64.h"
 
 void setup() {
-  EEPROM.begin(512);
+  EEPROM.begin(4096);
   Serial.begin(115200);
   
   //generate base64 string from credentials, for http basic auth
@@ -37,9 +37,7 @@ void setup() {
   uploadError();
 
   eeprom_read_string(0, buf, EEPROM_MAX_ADDR);
-  Serial.print(String("eeprom read: "));
   Serial.println(buf);
-  serverClient.print(String("eeprom read: "));
   serverClient.println(buf);
 
   if(counter<0){

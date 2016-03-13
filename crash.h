@@ -10,7 +10,6 @@ String getStack(uint32_t starter, uint32_t ender, uint32_t offset){
 
       // rough indicator: stack frames usually have SP saved as the second word
       bool looksLikeStackFrame = (values[2] == pos + 0x10);
-      Serial.println("pos" + pos);
       sprintf(stack_self2, "%08x:  %08x %08x %08x %08x %c\n", pos, values[0], values[1], values[2], values[3], (looksLikeStackFrame)?'<':' ');
       strcat(stack_self, stack_self2);
   } 
@@ -24,7 +23,7 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   register uint32_t sp asm("a1");
   cont_t g_cont __attribute__ ((aligned (16)));
   char result[2000];
-  char exception[1050];
+  char exception[300];
   char cont[14];
   char nctx[14];
   char spi[50];
