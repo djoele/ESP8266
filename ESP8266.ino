@@ -33,13 +33,9 @@ void setup() {
   WiFi.onEvent(WiFiEvent);
 
   determineStartValues();
-  
   uploadError();
-
-  eeprom_read_string(0, buf, EEPROM_MAX_ADDR);
-  Serial.println(buf);
-  serverClient.println(buf);
-
+  uploadStack();
+  
   if(counter<0){
     ESP.restart();
   }
