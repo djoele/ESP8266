@@ -26,8 +26,11 @@
 #include "update.h"
 
 void setup() {
-  EEPROM.begin(4096);
   Serial.begin(115200);
+  Serial.setDebugOutput(true);
+  //#define DEBUG_ESP_HTTP_UPDATE;
+  
+  EEPROM.begin(4096);
   
   //generate base64 string from credentials, for http basic auth
   memset(unameenc,0,sizeof(unameenc));

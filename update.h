@@ -5,6 +5,8 @@ void doUpdate(){
     Serial.println(String("ret: ") + ret);
     serverClient.println(String("ret: ") + ret);
     if(ret == HTTP_UPDATE_OK) {
+      //Helpt dit tegen een vroegtijdige reboot?
+      WiFi.removeEvent(WiFiEvent);
       Serial.println("Update sketch...");
       ret = ESPhttpUpdate.update(binPath);
       Serial.println(String("ret: ") + ret);

@@ -60,7 +60,7 @@ WiFiClient serverClient;
 unsigned long startTimeWifi = millis();
 
 const int EEPROM_MIN_ADDR = 0;
-const int EEPROM_MAX_ADDR = 4096;
+const int EEPROM_MAX_ADDR = 4096/2;
 char buf[EEPROM_MAX_ADDR];
 char buf2[750];
 
