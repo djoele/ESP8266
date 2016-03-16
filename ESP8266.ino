@@ -28,7 +28,6 @@
 void setup() {
   Serial.begin(115200);
   Serial.setDebugOutput(true);
-  //#define DEBUG_ESP_HTTP_UPDATE;
   
   EEPROM.begin(4096);
   

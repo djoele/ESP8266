@@ -7,9 +7,14 @@ const char* password = "Wachtwoord";
 const char* host = "192.168.2.3";
 const int httpPort = 8080;
 const int httpPort2 = 3000;
-const char* binPath = "http://192.168.2.3:8080/ESP8266.ino.bin";
 
-char uname[] = "djoele:@jP6Aq03"; //needs to be replaced with your user/pass
+const char* binPath = "http://192.168.2.3:3000/update_esp8266";
+const char* updhost = "192.168.2.3";
+const char* updport = "8080";
+const char* updurl = "/ESP8266.ino.bin";
+const char* updcurrentver = "bla";
+
+char uname[] = "djoele:@jP6Aq03";
 char unameenc[40];
 
 const char* updateString = "/json.htm?type=command&param=udevice&idx=";

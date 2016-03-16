@@ -1,11 +1,13 @@
 void doUpdate(){
   if((WiFi.status() == WL_CONNECTED)) {
-    Serial.println("Update SPIFFS...");
-    t_httpUpdate_return ret = ESPhttpUpdate.updateSpiffs(binPath);
+    Serial.println("Update flash...");
+    t_httpUpdate_return ret = ESPhttpUpdate.update(binPath);
+    //t_httpUpdate_return ret = ESPhttpUpdate.updateSpiffs(updhost, updport, updurl, updcurrentver);
+    
     Serial.println(String("ret: ") + ret);
     serverClient.println(String("ret: ") + ret);
     if(ret == HTTP_UPDATE_OK) {
-      //Helpt dit tegen een vroegtijdige reboot?
+      //Dit helpt tegen een vroegtijdige reboot?
       WiFi.removeEvent(WiFiEvent);
       Serial.println("Update sketch...");
       ret = ESPhttpUpdate.update(binPath);
