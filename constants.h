@@ -9,10 +9,8 @@ const int httpPort = 8080;
 const int httpPort2 = 3000;
 
 const char* binPath = "http://192.168.2.3:3000/update_esp8266";
-const char* updhost = "192.168.2.3";
-const char* updport = "8080";
-const char* updurl = "/ESP8266.ino.bin";
-const char* updcurrentver = "bla";
+const char * updateurl = "http://192.168.2.3:3000/update_esp8266";
+const char * current_version = "bla";
 
 char uname[] = "djoele:@jP6Aq03";
 char unameenc[40];

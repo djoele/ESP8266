@@ -1,4 +1,5 @@
 #include <EEPROM.h>
+#include <ArduinoOTA.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
 #include <WiFiClient.h>
@@ -13,7 +14,6 @@
 #include <user_interface.h>
 #include <SoftwareSerial.h>
 #include <ESP8266mDNS.h>
-#include <ArduinoOTA.h>
 #include <stdio.h>
 #include <string.h>
 #include "cont.h"
