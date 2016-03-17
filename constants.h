@@ -8,9 +8,14 @@ const char* host = "192.168.2.3";
 const int httpPort = 8080;
 const int httpPort2 = 3000;
 
+const int EEPROM_MIN_ADDR = 0;
+const int EEPROM_MAX_ADDR = 4096/2;
+char buf[EEPROM_MAX_ADDR];
+char buf2[750];
+
 const char* binPath = "http://192.168.2.3:3000/update_esp8266";
 const char * updateurl = "http://192.168.2.3:3000/update_esp8266";
-const char * current_version = "bla";
+String version;
 
 char uname[] = "djoele:@jP6Aq03";
 char unameenc[40];
@@ -61,11 +66,6 @@ time_t tijdsduur2 = 0;
 WiFiServer telnetServer(23);
 WiFiClient serverClient;
 unsigned long startTimeWifi = millis();
-
-const int EEPROM_MIN_ADDR = 0;
-const int EEPROM_MAX_ADDR = 4096/2;
-char buf[EEPROM_MAX_ADDR];
-char buf2[750];
 
 uint32_t a;
 uint32_t b;

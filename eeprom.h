@@ -1,3 +1,7 @@
+boolean f(int addr) {
+  return ((addr >= EEPROM_MIN_ADDR) && (addr <= EEPROM_MAX_ADDR));
+}
+
 boolean eeprom_is_addr_ok(int addr) {
   return ((addr >= EEPROM_MIN_ADDR) && (addr <= EEPROM_MAX_ADDR));
 }
