@@ -13,8 +13,8 @@ const int EEPROM_MAX_ADDR = 4096/2;
 char buf[EEPROM_MAX_ADDR];
 char buf2[750];
 
-const char* binPath = "http://192.168.2.3:3000/update_esp8266";
-const char * updateurl = "http://192.168.2.3:3000/update_esp8266";
+const char* binPath = "http://192.168.2.3:3001/update_esp8266";
+const char * updateurl = "http://192.168.2.3:3001/update_esp8266";
 String version;
 
 char uname[] = "djoele:@jP6Aq03";
