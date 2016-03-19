@@ -30,12 +30,11 @@ void setup() {
   Serial.setDebugOutput(true);
   
   EEPROM.begin(4096);
-  //EEPROM.get(4096/2,version);
-  //Serial.print("MD5 read from 4095: ");
-  //Serial.print("\t");     
-  //char md5value[1024];
-  //strcpy(md5value, version.c_str()); 
-  //Serial.print(md5value);
+  EEPROM.get(4096/2,version);
+  Serial.print("MD5 read from 4095: ");
+  Serial.print("\t");     
+  strcpy(md5value, version.c_str()); 
+  Serial.print(md5value);
  
   //generate base64 string from credentials, for http basic auth
   memset(unameenc,0,sizeof(unameenc));

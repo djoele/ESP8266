@@ -16,6 +16,7 @@ char buf2[750];
 const char* binPath = "http://192.168.2.3:3001/update_esp8266";
 const char * updateurl = "http://192.168.2.3:3001/update_esp8266";
 String version;
+char md5value[1024];
 
 char uname[] = "djoele:@jP6Aq03";
 char unameenc[40];
