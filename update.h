@@ -1,10 +1,8 @@
 void doUpdate(){
   if((WiFi.status() == WL_CONNECTED)) {
     Serial.println("Update flash...");
-    //t_httpUpdate_return ret = ESPhttpUpdate.update(binPath);
-    sSerial.println(String("Current version now: ") + md5value);
+    Serial.println(String("Current version now: ") + md5value);
     t_httpUpdate_return ret = ESPhttpUpdate.update(updateurl, md5value);
-    //t_httpUpdate_return ret = ESPhttpUpdate.update(updateurl);
     Serial.println(String("ret: ") + ret);
     serverClient.println(String("ret: ") + ret);
     if(ret == HTTP_UPDATE_OK) {
@@ -12,9 +10,7 @@ void doUpdate(){
       WiFi.removeEvent(WiFiEvent);
       Serial.println("Update sketch...");
       ret = ESPhttpUpdate.update(updateurl, md5value);
-      //ret = ESPhttpUpdate.update(updateurl);
       Serial.println(String("ret: ") + ret);
-      serverClient.println(String("ret: ") + ret);
       switch(ret) {
         case HTTP_UPDATE_FAILED:
           Serial.printf("HTTP_UPDATE_FAILD Error (%d): %s", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
