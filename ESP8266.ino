@@ -46,10 +46,6 @@ void setup() {
   determineStartValues();
   uploadError();
   uploadStack();
-  
-  //if(counter<0){
-    //ESP.restart();
-  //}
 
   pinMode(pinGas, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(pinGas), pinupGas, FALLING);

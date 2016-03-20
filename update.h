@@ -1,7 +1,6 @@
 void doUpdate(){
   if((WiFi.status() == WL_CONNECTED)) {
     Serial.println("Update flash...");
-    //Serial.println(String("Current version now: ") + md5value);
     t_httpUpdate_return ret = ESPhttpUpdate.update(updateurl, md5value);
     Serial.println(String("ret: ") + ret);
     if(ret == HTTP_UPDATE_OK) {
