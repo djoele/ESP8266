@@ -17,6 +17,5 @@ String readMD5() {
     line = md5.readStringUntil('\n');
   }
   md5.close();
-  
   return line;
 }
