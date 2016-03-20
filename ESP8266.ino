@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <EEPROM.h>
 #include <ArduinoOTA.h>
 #include <ESP8266WiFi.h>
@@ -5,17 +6,17 @@
 #include <WiFiClient.h>
 #include <WiFiClientSecure.h>
 #include <WiFiUdp.h>
-#include <ESP8266WiFiMulti.h>
 #include <ESP8266HTTPClient.h>
-#include <ESP8266httpUpdate.h>
 #include <Time.h>
 #include <TimeLib.h>
 #include <TimeAlarms.h>
 #include <user_interface.h>
 #include <SoftwareSerial.h>
 #include <ESP8266mDNS.h>
-#include <stdio.h>
 #include <string.h>
+#include <FS.h>
+#include <ESP8266httpUpdate.h>
+#include "md5file.h"
 #include "cont.h"
 #include "constants.h"
 #include "eeprom.h"
@@ -30,12 +31,11 @@ void setup() {
   Serial.setDebugOutput(true);
   
   EEPROM.begin(4096);
-  EEPROM.get(4096/2,version);
-  //Serial.print("MD5 read from EEPROM: ");
-  //Serial.print("\t");     
-  strcpy(md5value, version.c_str()); 
-  //Serial.print(md5value);
- 
+  SPIFFS.begin();
+  
+  version = readMD5();
+  strcpy(md5value, version.c_str());
+
   //generate base64 string from credentials, for http basic auth
   memset(unameenc,0,sizeof(unameenc));
   base64_encode(unameenc, uname, strlen(uname));
