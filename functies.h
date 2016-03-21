@@ -50,8 +50,7 @@ unsigned char h2int(char c)
 void connectWifi() {
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
+    delay(1);
     ESP.wdtFeed();
   }
   Serial.println("WiFi connected..");
