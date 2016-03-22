@@ -160,7 +160,6 @@ void uploadResetinfoToDomoticz(int id, const char* updateString2, const char* ty
                "Host: " + host + "\r\n" +
                "Authorization: Basic " + unameenc + " \r\n" + 
                "Connection: close\r\n\r\n");
-  delay(500);
 }
 
 void uploadGas() {
