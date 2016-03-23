@@ -180,31 +180,13 @@ void  uploadEnergie2() {
   uploadValueToDomoticz(ID, updateElectricityOrText, type, counter, -1);
 }
 
-void replaceSpaces(const char* string,char* newstring) {
-  #define MAX_STR_LENGTH 1000
-  
-  // Copy first MAX_STR_LENGTH characters into newstring
-  strncpy(newstring, string, MAX_STR_LENGTH);
-  //explicitly set the last byte of the buffer to 0 after calling strncpy
-  newstring[MAX_STR_LENGTH - 1] = 0;
-
-  unsigned int i = 0;
-  for (i = 0; i < MAX_STR_LENGTH; ++i) {
-    if (newstring[i] == ' ') { // Look for a space
-      newstring[i] = ','; // replace with a %20
-    }
-  }
-}
-
-void uploadError() {    
-  const char* rinfo;
-  char rinfo2[1000];
-  rinfo = ESP.getResetInfo().c_str();
-  replaceSpaces(rinfo,rinfo2);
-  uploadResetinfoToDomoticz(ID3, updateElectricityOrText, type3, rinfo2, -1);
-}
-
 void uploadStack(){
+  char *rinfo;
+  String reset;
+  reset = ESP.getResetInfo();
+  rinfo = &reset[0];
+  char rr[500];
+  
   eeprom_read_string(0, buf, EEPROM_MAX_ADDR);
   Serial.println("***************************STACK FROM BUF****************************************");
   Serial.println(buf);
@@ -220,10 +202,13 @@ void uploadStack(){
     ret = strstr(stackkie, find);
   }
   Serial.println(ret);
+  strcpy(rr, rinfo);
+  strcat(rr, (const char *)ret);
+  Serial.println(rr);
   
   Serial.println("****************************STACK AFTER URLENCODE********************************");
-  String bla = urlencode(ret);
-  Serial.println(bla);
+  String bla = urlencode(rr);
+  Serial.println(rr);
   Serial.println("****************************STACK AFTER URLENCODE********************************");
   uploadResetinfoToDomoticz(ID3, updateElectricityOrText, type3, bla, -1);
 }

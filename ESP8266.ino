@@ -35,7 +35,6 @@ void setup() {
   version = readMD5();
   strcpy(md5value, version.c_str());
 
-  //generate base64 string from credentials, for http basic auth
   memset(unameenc,0,sizeof(unameenc));
   base64_encode(unameenc, uname, strlen(uname));
 
@@ -43,7 +42,6 @@ void setup() {
   WiFi.onEvent(WiFiEvent);
 
   determineStartValues();
-  uploadError();
   uploadStack();
 
   pinMode(pinGas, INPUT_PULLUP);
