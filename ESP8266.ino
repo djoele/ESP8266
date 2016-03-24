@@ -29,7 +29,7 @@ void setup() {
   Serial.begin(115200);
   Serial.setDebugOutput(true);
   
-  EEPROM.begin(4096);
+  EEPROM.begin(4096/2);
   SPIFFS.begin();
   
   version = readMD5();

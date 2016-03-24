@@ -69,6 +69,8 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   strcat(result, buf2);
   strcpy(buf,result);
 
+  eeprom_erase_all();
+  EEPROM.commit();
   eeprom_write_string(0, buf);
   EEPROM.commit();
 } 
