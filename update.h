@@ -1,10 +1,12 @@
 void doUpdate(){
   if((WiFi.status() == WL_CONNECTED)) {
-    t_httpUpdate_return ret = ESPhttpUpdate.update(updateurl, md5value);
     Serial.println("Update flash...");
+    t_httpUpdate_return ret = ESPhttpUpdate.update(updateurl, md5value);
+    Serial.println(String("ret: ") + ret);
     if(ret == HTTP_UPDATE_OK) {
       //Dit helpt tegen een vroegtijdige reboot
-      //WiFi.removeEvent(WiFiEvent);
+      WiFi.removeEvent(WiFiEvent);
+      Serial.println("Update sketch...");
       ret = ESPhttpUpdate.update(updateurl, md5value);
       Serial.println(String("ret: ") + ret);
       switch(ret) {
@@ -21,3 +23,4 @@ void doUpdate(){
      }
   }
 }
+

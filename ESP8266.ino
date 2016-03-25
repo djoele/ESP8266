@@ -12,6 +12,7 @@
 #include <TimeAlarms.h>
 #include <user_interface.h>
 #include <SoftwareSerial.h>
+#include <ESP8266mDNS.h>
 #include <string.h>
 #include <FS.h>
 #include <ESP8266httpUpdate.h>
@@ -29,7 +30,7 @@ void setup() {
   Serial.begin(115200);
   Serial.setDebugOutput(true);
   
-  EEPROM.begin(4096/2);
+  EEPROM.begin(EEPROM_MAX_ADDR);
   SPIFFS.begin();
   
   version = readMD5();
@@ -40,8 +41,9 @@ void setup() {
 
   connectWifi();
   WiFi.onEvent(WiFiEvent);
-
+  
   determineStartValues();
+  
   uploadStack();
 
   pinMode(pinGas, INPUT_PULLUP);
@@ -63,8 +65,7 @@ void setup() {
 
   ArduinoOTA.setPort(8266);
   ArduinoOTA.setHostname("ESP8266-Meterkast");
-  //ArduinoOTA.setPassword((const char *)"1234");
-
+  // ArduinoOTA.setPassword((const char *)"123");
   ArduinoOTA.onStart([]() {
     Serial.println("Start");
   });

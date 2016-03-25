@@ -50,7 +50,7 @@ unsigned char h2int(char c)
 void connectWifi() {
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
+    delay(1);
     ESP.wdtFeed();
   }
   Serial.println("WiFi connected..");
@@ -181,11 +181,11 @@ void  uploadEnergie2() {
 }
 
 void uploadStack(){
-  char *rinfo;
-  String reset;
-  reset = ESP.getResetInfo();
-  rinfo = &reset[0];
-  char rr[500];
+  //char *rinfo;
+  //String reset;
+  //reset = ESP.getResetInfo();
+  //rinfo = &reset[0];
+  //char rr[500];
   
   eeprom_read_string(0, buf, EEPROM_MAX_ADDR);
   Serial.println("***************************STACK FROM BUF****************************************");
@@ -202,15 +202,15 @@ void uploadStack(){
     ret = strstr(stackkie, find);
   }
   Serial.println(ret);
-  strcpy(rr, rinfo);
-  strcat(rr, (const char *)ret);
-  Serial.println(rr);
+  //strcpy(rr, rinfo);
+  //strcat(rr, (const char *)ret);
+  //Serial.println(rr);
   
   Serial.println("****************************STACK AFTER URLENCODE********************************");
-  String bla = urlencode(rr);
-  Serial.println(rr);
+  //String bla = urlencode(rr);
+  //Serial.println(rr);
   Serial.println("****************************STACK AFTER URLENCODE********************************");
-  uploadResetinfoToDomoticz(ID3, updateElectricityOrText, type3, bla, -1);
+  //uploadResetinfoToDomoticz(ID3, updateElectricityOrText, type3, bla, -1);
 }
 
 void handleTelnet(){
@@ -228,3 +228,4 @@ void handleTelnet(){
   }
   delay(10);  // to avoid strange characters left in buffer
 }
+

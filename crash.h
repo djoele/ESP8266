@@ -1,6 +1,6 @@
 String getStack(uint32_t starter, uint32_t ender, uint32_t offset){
-  char stack_self[1200] = "";
-  char stack_self2[46];
+  char stack_self[1000] = "";
+  char stack_self2[76];
   const char stack_begin[15] = "\n>>>stack>>>\n";
   const char stack_end[13] = "<<<stack<<<\n";
   strcat(stack_self, stack_begin);
@@ -69,8 +69,7 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   strcat(result, buf2);
   strcpy(buf,result);
 
-  eeprom_erase_all();
-  EEPROM.commit();
   eeprom_write_string(0, buf);
   EEPROM.commit();
 } 
+
