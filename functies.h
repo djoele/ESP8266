@@ -25,7 +25,6 @@ String urlencode(String str)
         encodedString+='%';
         encodedString+=code0;
         encodedString+=code1;
-        //encodedString+=code2;
       }
       yield();
     }
@@ -50,22 +49,17 @@ unsigned char h2int(char c)
 void connectWifi() {
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
+    delay(1);
     ESP.wdtFeed();
   }
-  Serial.println("WiFi connected..");
 }
 
 void WiFiEvent(WiFiEvent_t event) {
-  Serial.printf("[WiFi-event] event: %d\n", event);
   switch (event) {
     case WIFI_EVENT_STAMODE_DHCP_TIMEOUT:
-      Serial.println("WiFi DHCP Timeout");
       connectWifi();
       break;
     case WIFI_EVENT_STAMODE_DISCONNECTED:
-      Serial.println("WiFi lost connection");
       connectWifi();
       break;
   }
@@ -74,14 +68,10 @@ void WiFiEvent(WiFiEvent_t event) {
 void determineStartValues() {
   WiFiClient client;
   if (!client.connect(host, httpPort2)) {
-    Serial.println("connection failed");
     return;
   }
 
   String url = "/meterkast";
-  Serial.print("Requesting URL: ");
-  Serial.println(url);
-
   client.print(String("GET ") + url + " HTTP/1.1\r\n" +
                "Host: " + host + "\r\n" +
                "Authorization: Basic " + unameenc + " \r\n" + 
@@ -93,17 +83,12 @@ void determineStartValues() {
   memset(buffer, 0, sizeof(buffer));
   while (client.available()) {
     client.readBytesUntil('\r', buffer, sizeof(buffer));
-    Serial.print(buffer);
   }
-  
   char *p;
-  Serial.println(String("Split in tokens: ") + buffer);
-
   p = strtok (buffer, " ");
   int teller = 0;
   while (p != NULL && teller < 3)
   {
-    Serial.println(String("Deel string: ") + p);
     if (teller == 0) {
       counter = atoi(p);
     }
@@ -123,7 +108,6 @@ void determineStartValues() {
 void uploadValueToDomoticz(int id, const char* updateString2, const char* type, int value, int value2) {
   WiFiClient client;
   if (!client.connect(host, httpPort)) {
-    Serial.println("connection failed");
     return;
   }
 
@@ -131,21 +115,15 @@ void uploadValueToDomoticz(int id, const char* updateString2, const char* type, 
   if (type == "Huidig energieverbruik") {
     url = String(updateString) + id + String(updateString2) + value + ";" + value2;
   }
-  Serial.print("Request: ");
-  Serial.println(url);
-  Serial.println(String("Uploading ") + type + ": " + value);
-
   client.print(String("GET ") + url + " HTTP/1.1\r\n" +
                "Host: " + host + "\r\n" +
                "Authorization: Basic " + unameenc + " \r\n" + 
                "Connection: close\r\n\r\n");
-  delay(500);
 }
 
 void uploadResetinfoToDomoticz(int id, const char* updateString2, const char* type, String value, int value2) {
   WiFiClient client;
   if (!client.connect(host, httpPort)) {
-    Serial.println("connection failed");
     return;
   }
 
@@ -153,15 +131,10 @@ void uploadResetinfoToDomoticz(int id, const char* updateString2, const char* ty
   if (type == "Huidig energieverbruik") {
     url = String(updateString) + id + String(updateString2) + value + ";" + value2;
   }
-  Serial.print("Request: ");
-  Serial.println(url);
-  Serial.println(String("Uploading ") + type + ": " + value);
-
   client.print(String("GET ") + url + " HTTP/1.1\r\n" +
                "Host: " + host + "\r\n" +
                "Authorization: Basic " + unameenc + " \r\n" + 
                "Connection: close\r\n\r\n");
-  delay(500);
 }
 
 void uploadGas() {
@@ -182,36 +155,14 @@ void  uploadEnergie2() {
   uploadValueToDomoticz(ID, updateElectricityOrText, type, counter, -1);
 }
 
-void replaceSpaces(const char* string,char* newstring) {
-  #define MAX_STR_LENGTH 1000
-  
-  // Copy first MAX_STR_LENGTH characters into newstring
-  strncpy(newstring, string, MAX_STR_LENGTH);
-  //explicitly set the last byte of the buffer to 0 after calling strncpy
-  newstring[MAX_STR_LENGTH - 1] = 0;
-
-  unsigned int i = 0;
-  for (i = 0; i < MAX_STR_LENGTH; ++i) {
-    if (newstring[i] == ' ') { // Look for a space
-      newstring[i] = ','; // replace with a %20
-    }
-  }
-}
-
-void uploadError() {    
-  const char* rinfo;
-  char rinfo2[1000];
-  rinfo = ESP.getResetInfo().c_str();
-  replaceSpaces(rinfo,rinfo2);
-  uploadResetinfoToDomoticz(ID3, updateElectricityOrText, type3, rinfo2, -1);
-}
-
 void uploadStack(){
+  char *rinfo;
+  String reset;
+  reset = ESP.getResetInfo();
+  rinfo = &reset[0];
+  char rr[1000];
+ 
   eeprom_read_string(0, buf, EEPROM_MAX_ADDR);
-  Serial.println("***************************STACK FROM BUF****************************************");
-  Serial.println(buf);
-  Serial.println("***************************STACK FROM BUF****************************************");
-  
   String stack = urlencode(buf);
   const char find[4] = "ctx";
   const char find2[10] = "Exception";
@@ -221,12 +172,12 @@ void uploadStack(){
   if (ret==NULL){
     ret = strstr(stackkie, find);
   }
-  Serial.println(ret);
-  
-  Serial.println("****************************STACK AFTER URLENCODE********************************");
-  String bla = urlencode(ret);
+
+  strcpy(rr, rinfo);
+  strcat(rr, (const char *)ret);
+
+  String bla = urlencode(rr);
   Serial.println(bla);
-  Serial.println("****************************STACK AFTER URLENCODE********************************");
   uploadResetinfoToDomoticz(ID3, updateElectricityOrText, type3, bla, -1);
 }
 
