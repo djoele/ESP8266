@@ -1,6 +1,6 @@
 String getStack(uint32_t starter, uint32_t ender, uint32_t offset){
   char stack_self[1000] = "";
-  char stack_self2[76];
+  char stack_self2[46];
   const char stack_begin[15] = "\n>>>stack>>>\n";
   const char stack_end[13] = "<<<stack<<<\n";
   strcat(stack_self, stack_begin);

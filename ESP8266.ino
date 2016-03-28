@@ -10,9 +10,9 @@
 #include <TimeAlarms.h>
 #include <user_interface.h>
 #include <ESP8266httpUpdate.h>
+#include "constants.h"
 #include "md5file.h"
 #include "cont.h"
-#include "constants.h"
 #include "eeprom.h"
 #include "crash.h"
 #include "functies.h"
@@ -27,7 +27,7 @@ void setup() {
   EEPROM.begin(EEPROM_MAX_ADDR);
   SPIFFS.begin();
   
-  version = readMD5();
+  version = readFile("/md5.txt");
   strcpy(md5value, version.c_str());
 
   memset(unameenc,0,sizeof(unameenc));
@@ -35,8 +35,9 @@ void setup() {
 
   connectWifi();
   WiFi.onEvent(WiFiEvent);
-  
-  //determineStartValues();
+
+  //FOR RESET saveValues();
+  determineStartValues();
   uploadStack();
 
   pinMode(pinGas, INPUT_PULLUP);
@@ -55,18 +56,11 @@ void setup() {
   Alarm.timerRepeat(300, uploadWater);
   Alarm.timerRepeat(350, uploadGas);
   Alarm.timerRepeat(60, doUpdate);
+  Alarm.timerRepeat(30, saveValues);
 
   ArduinoOTA.setPort(8266);
   ArduinoOTA.setHostname("ESP8266-Meterkast");
   // ArduinoOTA.setPassword((const char *)"123");
-  ArduinoOTA.onError([](ota_error_t error) {
-    Serial.printf("Error[%u]: ", error);
-    if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
-    else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
-    else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
-    else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
-    else if (error == OTA_END_ERROR) Serial.println("End Failed");
-  });
   ArduinoOTA.begin();
   telnetServer.begin();
   telnetServer.setNoDelay(true);

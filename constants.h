@@ -2,16 +2,16 @@ const int pinEnergie = 5;
 const int pinGas = 0;
 const int pinWater = 12;
 
-const char* ssid = "Stonealone";
-const char* password = "lievelian56";
-const char* host = "localhost";
-const int httpPort = 80;
+const char* ssid = "VGV7519B5207C";
+const char* password = "Wachtwoord";
+const char* host = "192.168.2.3";
+const int httpPort = 8080;
 const int httpPort2 = 3000;
 
 const int EEPROM_MIN_ADDR = 0;
 const int EEPROM_MAX_ADDR = 4096/2;
 char buf[EEPROM_MAX_ADDR];
-char buf2[750];
+char buf2[1000];
 
 const char * updateurl = "https://framboos-domotica.tk:443/update_esp8266";
 String version;
@@ -27,7 +27,7 @@ const char* updateElectricityOrText = "&nvalue=0&svalue=";
 const char* updateGas = "&svalue=0&svalue=";
 
 //Energie
-int counter = -1;
+int counter = 0;
 const int ID = 11;
 const char* type = "Energie";
 
@@ -35,13 +35,13 @@ const int ID4 = 14;
 const char* type4 = "Huidig energieverbruik";
 
 //Water
-volatile int counter1 = -1;
+volatile int counter1 = 0;
 const int ID1 = 12;
 const char* type1 = "Water";
 int waterpuls = 0;
 
 //Gas
-int counter2 = -1;
+int counter2 = 0;
 const int ID2 = 13;
 const char* type2 = "Gas";
 volatile int gaspuls = 0;

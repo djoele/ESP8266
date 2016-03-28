@@ -32,20 +32,6 @@ String urlencode(String str)
     
 }
 
-unsigned char h2int(char c)
-{
-    if (c >= '0' && c <='9'){
-        return((unsigned char)c - '0');
-    }
-    if (c >= 'a' && c <='f'){
-        return((unsigned char)c - 'a' + 10);
-    }
-    if (c >= 'A' && c <='F'){
-        return((unsigned char)c - 'A' + 10);
-    }
-    return(0);
-}
-
 void connectWifi() {
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
@@ -65,25 +51,26 @@ void WiFiEvent(WiFiEvent_t event) {
   }
 }
 
-void determineStartValues() {
+WiFiClient callURL(String url, const char* host, const int port, String unameenc) {
   WiFiClient client;
-  if (!client.connect(host, httpPort2)) {
-    return;
+  if (!client.connect(host, port)) {
+    return client;
   }
-
-  String url = "/meterkast";
   client.print(String("GET ") + url + " HTTP/1.1\r\n" +
                "Host: " + host + "\r\n" +
                "Authorization: Basic " + unameenc + " \r\n" + 
                "Connection: close\r\n\r\n");
-  delay(500);
-
-  const int MAX_PAGENAME_LEN = 1024;
-  char buffer[MAX_PAGENAME_LEN + 1];
-  memset(buffer, 0, sizeof(buffer));
-  while (client.available()) {
-    client.readBytesUntil('\r', buffer, sizeof(buffer));
+  return client;
+}
+               
+void determineStartValues() {
+  if(!SPIFFS.exists("/values.txt")){
+    Serial.println("values.txt niet gevonden"); 
+    saveValues();
   }
+  String bufferin = readFile("/values.txt");
+  char buffer[1024];
+  strcpy(buffer,bufferin.c_str());
   char *p;
   p = strtok (buffer, " ");
   int teller = 0;
@@ -106,35 +93,19 @@ void determineStartValues() {
 }
 
 void uploadValueToDomoticz(int id, const char* updateString2, const char* type, int value, int value2) {
-  WiFiClient client;
-  if (!client.connect(host, httpPort)) {
-    return;
-  }
-
   String url = String(updateString) + id + String(updateString2) + value;
   if (type == "Huidig energieverbruik") {
     url = String(updateString) + id + String(updateString2) + value + ";" + value2;
   }
-  client.print(String("GET ") + url + " HTTP/1.1\r\n" +
-               "Host: " + host + "\r\n" +
-               "Authorization: Basic " + unameenc + " \r\n" + 
-               "Connection: close\r\n\r\n");
+  callURL(url, host, httpPort, unameenc);
 }
 
 void uploadResetinfoToDomoticz(int id, const char* updateString2, const char* type, String value, int value2) {
-  WiFiClient client;
-  if (!client.connect(host, httpPort)) {
-    return;
-  }
-
   String url = String(updateString) + id + String(updateString2) + value;
   if (type == "Huidig energieverbruik") {
     url = String(updateString) + id + String(updateString2) + value + ";" + value2;
   }
-  client.print(String("GET ") + url + " HTTP/1.1\r\n" +
-               "Host: " + host + "\r\n" +
-               "Authorization: Basic " + unameenc + " \r\n" + 
-               "Connection: close\r\n\r\n");
+  callURL(url, host, httpPort, unameenc);
 }
 
 void uploadGas() {
@@ -156,7 +127,6 @@ void  uploadEnergie2() {
 }
 
 void uploadStack(){
-
   char *rinfo;
   String reset;
   reset = ESP.getResetInfo();
