@@ -25,7 +25,6 @@ String urlencode(String str)
         encodedString+='%';
         encodedString+=code0;
         encodedString+=code1;
-        //encodedString+=code2;
       }
       yield();
     }
@@ -53,18 +52,14 @@ void connectWifi() {
     delay(1);
     ESP.wdtFeed();
   }
-  Serial.println("WiFi connected..");
 }
 
 void WiFiEvent(WiFiEvent_t event) {
-  Serial.printf("[WiFi-event] event: %d\n", event);
   switch (event) {
     case WIFI_EVENT_STAMODE_DHCP_TIMEOUT:
-      Serial.println("WiFi DHCP Timeout");
       connectWifi();
       break;
     case WIFI_EVENT_STAMODE_DISCONNECTED:
-      Serial.println("WiFi lost connection");
       connectWifi();
       break;
   }
@@ -73,14 +68,10 @@ void WiFiEvent(WiFiEvent_t event) {
 void determineStartValues() {
   WiFiClient client;
   if (!client.connect(host, httpPort2)) {
-    Serial.println("connection failed");
     return;
   }
 
   String url = "/meterkast";
-  Serial.print("Requesting URL: ");
-  Serial.println(url);
-
   client.print(String("GET ") + url + " HTTP/1.1\r\n" +
                "Host: " + host + "\r\n" +
                "Authorization: Basic " + unameenc + " \r\n" + 
@@ -92,17 +83,12 @@ void determineStartValues() {
   memset(buffer, 0, sizeof(buffer));
   while (client.available()) {
     client.readBytesUntil('\r', buffer, sizeof(buffer));
-    Serial.print(buffer);
   }
-  
   char *p;
-  Serial.println(String("Split in tokens: ") + buffer);
-
   p = strtok (buffer, " ");
   int teller = 0;
   while (p != NULL && teller < 3)
   {
-    Serial.println(String("Deel string: ") + p);
     if (teller == 0) {
       counter = atoi(p);
     }
@@ -122,7 +108,6 @@ void determineStartValues() {
 void uploadValueToDomoticz(int id, const char* updateString2, const char* type, int value, int value2) {
   WiFiClient client;
   if (!client.connect(host, httpPort)) {
-    Serial.println("connection failed");
     return;
   }
 
@@ -130,21 +115,15 @@ void uploadValueToDomoticz(int id, const char* updateString2, const char* type, 
   if (type == "Huidig energieverbruik") {
     url = String(updateString) + id + String(updateString2) + value + ";" + value2;
   }
-  Serial.print("Request: ");
-  Serial.println(url);
-  Serial.println(String("Uploading ") + type + ": " + value);
-
   client.print(String("GET ") + url + " HTTP/1.1\r\n" +
                "Host: " + host + "\r\n" +
                "Authorization: Basic " + unameenc + " \r\n" + 
                "Connection: close\r\n\r\n");
-  delay(500);
 }
 
 void uploadResetinfoToDomoticz(int id, const char* updateString2, const char* type, String value, int value2) {
   WiFiClient client;
   if (!client.connect(host, httpPort)) {
-    Serial.println("connection failed");
     return;
   }
 
@@ -152,10 +131,6 @@ void uploadResetinfoToDomoticz(int id, const char* updateString2, const char* ty
   if (type == "Huidig energieverbruik") {
     url = String(updateString) + id + String(updateString2) + value + ";" + value2;
   }
-  Serial.print("Request: ");
-  Serial.println(url);
-  Serial.println(String("Uploading ") + type + ": " + value);
-
   client.print(String("GET ") + url + " HTTP/1.1\r\n" +
                "Host: " + host + "\r\n" +
                "Authorization: Basic " + unameenc + " \r\n" + 
@@ -181,17 +156,22 @@ void  uploadEnergie2() {
 }
 
 void uploadStack(){
+<<<<<<< HEAD
   //char *rinfo;
   //String reset;
   //reset = ESP.getResetInfo();
   //rinfo = &reset[0];
   //char rr[500];
   
+=======
+  char *rinfo;
+  String reset;
+  reset = ESP.getResetInfo();
+  rinfo = &reset[0];
+  char rr[1000];
+ 
+>>>>>>> try
   eeprom_read_string(0, buf, EEPROM_MAX_ADDR);
-  Serial.println("***************************STACK FROM BUF****************************************");
-  Serial.println(buf);
-  Serial.println("***************************STACK FROM BUF****************************************");
-  
   String stack = urlencode(buf);
   const char find[4] = "ctx";
   const char find2[10] = "Exception";
@@ -201,6 +181,7 @@ void uploadStack(){
   if (ret==NULL){
     ret = strstr(stackkie, find);
   }
+<<<<<<< HEAD
   Serial.println(ret);
   //strcpy(rr, rinfo);
   //strcat(rr, (const char *)ret);
@@ -211,6 +192,15 @@ void uploadStack(){
   //Serial.println(rr);
   Serial.println("****************************STACK AFTER URLENCODE********************************");
   //uploadResetinfoToDomoticz(ID3, updateElectricityOrText, type3, bla, -1);
+=======
+
+  strcpy(rr, rinfo);
+  strcat(rr, (const char *)ret);
+
+  String bla = urlencode(rr);
+  Serial.println(bla);
+  uploadResetinfoToDomoticz(ID3, updateElectricityOrText, type3, bla, -1);
+>>>>>>> try
 }
 
 void handleTelnet(){

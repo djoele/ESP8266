@@ -15,5 +15,3 @@ void pulsetaskwater() {
     }
     waarde = waardenu;
 }
-
-

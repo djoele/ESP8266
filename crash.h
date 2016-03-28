@@ -19,10 +19,10 @@ String getStack(uint32_t starter, uint32_t ender, uint32_t offset){
   return res;
 }
 
-extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack, uint32_t stack_end ){
+extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack, uint32_t stack_end ){    
   register uint32_t sp asm("a1");
   cont_t g_cont __attribute__ ((aligned (16)));
-  char result[2000];
+  char result[3000];
   char exception[300];
   char cont[14];
   char nctx[14];
@@ -69,6 +69,8 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   strcat(result, buf2);
   strcpy(buf,result);
 
+  eeprom_erase_all();
+  EEPROM.commit();
   eeprom_write_string(0, buf);
   EEPROM.commit();
 } 

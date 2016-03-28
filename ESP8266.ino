@@ -1,20 +1,14 @@
-#include <stdio.h>
 #include <EEPROM.h>
 #include <ArduinoOTA.h>
+#include <stdio.h>
+#include <FS.h>
 #include <ESP8266WiFi.h>
-#include <ESP8266WiFiMulti.h>
-#include <WiFiClient.h>
 #include <WiFiClientSecure.h>
-#include <WiFiUdp.h>
 #include <ESP8266HTTPClient.h>
 #include <Time.h>
 #include <TimeLib.h>
 #include <TimeAlarms.h>
 #include <user_interface.h>
-#include <SoftwareSerial.h>
-#include <ESP8266mDNS.h>
-#include <string.h>
-#include <FS.h>
 #include <ESP8266httpUpdate.h>
 #include "md5file.h"
 #include "cont.h"
@@ -35,15 +29,24 @@ void setup() {
   
   version = readMD5();
   strcpy(md5value, version.c_str());
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> try
   memset(unameenc,0,sizeof(unameenc));
   base64_encode(unameenc, uname, strlen(uname));
 
   connectWifi();
   WiFi.onEvent(WiFiEvent);
+<<<<<<< HEAD
   
   determineStartValues();
   
+=======
+
+  //determineStartValues();
+>>>>>>> try
   uploadStack();
 
   pinMode(pinGas, INPUT_PULLUP);
@@ -66,6 +69,7 @@ void setup() {
   ArduinoOTA.setPort(8266);
   ArduinoOTA.setHostname("ESP8266-Meterkast");
   // ArduinoOTA.setPassword((const char *)"123");
+<<<<<<< HEAD
   ArduinoOTA.onStart([]() {
     Serial.println("Start");
   });
@@ -75,6 +79,8 @@ void setup() {
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
     Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
   });
+=======
+>>>>>>> try
   ArduinoOTA.onError([](ota_error_t error) {
     Serial.printf("Error[%u]: ", error);
     if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
@@ -91,42 +97,32 @@ void setup() {
 void loop() { 
   ArduinoOTA.handle();
   handleTelnet();
-  
   if (energiepuls == 1){
     energiepuls = 0;
     counter++;
-    Serial.println(String("Energiepuls gedetecteerd: ") + counter);
-    serverClient.println(String("Energiepuls gedetecteerd: ") + counter);
     pulsetijd = now();
     tijdsduur = pulsetijd - begintijd;
     begintijd = pulsetijd;
     huidigverbruik = floor(3600 / tijdsduur);
-    Serial.println(String("Huidig verbruik: ") + huidigverbruik);
     serverClient.println(String("Huidig verbruik: ") + huidigverbruik);
   }
-  
   if (gaspuls == 1){
     gaspuls = 0;
     counter2++;
-    Serial.println(String("Gaspuls gedetecteerd: ") + counter2);
     serverClient.println(String("Gaspuls gedetecteerd: ") + counter2);
   }
-  
   pulsetaskwater();
   if (waterpuls == 1){
     triggernu = now();
     tijdsduur2 = triggernu - triggertijd;
-    Serial.println(String("Tijdsduur tot vorige waterpuls: ") + tijdsduur2);
     serverClient.println(String("Tijdsduur tot vorige waterpuls: ") + tijdsduur2);
     if (tijdsduur2 > 3) {
       counter1++;
-      Serial.println(String("Waterpuls gedetecteerd: ") + counter1);
       serverClient.println(String("Waterpuls gedetecteerd: ") + counter1);
     }  
     triggertijd = now();
     waterpuls = 0;
   }
-  
   ESP.wdtFeed();
   Alarm.delay(1000);
 }
