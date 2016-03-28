@@ -67,10 +67,3 @@ time_t tijdsduur2 = 0;
 WiFiServer telnetServer(23);
 WiFiClient serverClient;
 unsigned long startTimeWifi = millis();
-<<<<<<< HEAD
-
-uint32_t a;
-uint32_t b;
-
-=======
->>>>>>> try

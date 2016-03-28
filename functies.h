@@ -156,21 +156,13 @@ void  uploadEnergie2() {
 }
 
 void uploadStack(){
-<<<<<<< HEAD
-  //char *rinfo;
-  //String reset;
-  //reset = ESP.getResetInfo();
-  //rinfo = &reset[0];
-  //char rr[500];
-  
-=======
+
   char *rinfo;
   String reset;
   reset = ESP.getResetInfo();
   rinfo = &reset[0];
   char rr[1000];
  
->>>>>>> try
   eeprom_read_string(0, buf, EEPROM_MAX_ADDR);
   String stack = urlencode(buf);
   const char find[4] = "ctx";
@@ -181,26 +173,12 @@ void uploadStack(){
   if (ret==NULL){
     ret = strstr(stackkie, find);
   }
-<<<<<<< HEAD
-  Serial.println(ret);
-  //strcpy(rr, rinfo);
-  //strcat(rr, (const char *)ret);
-  //Serial.println(rr);
-  
-  Serial.println("****************************STACK AFTER URLENCODE********************************");
-  //String bla = urlencode(rr);
-  //Serial.println(rr);
-  Serial.println("****************************STACK AFTER URLENCODE********************************");
-  //uploadResetinfoToDomoticz(ID3, updateElectricityOrText, type3, bla, -1);
-=======
-
   strcpy(rr, rinfo);
   strcat(rr, (const char *)ret);
 
   String bla = urlencode(rr);
   Serial.println(bla);
   uploadResetinfoToDomoticz(ID3, updateElectricityOrText, type3, bla, -1);
->>>>>>> try
 }
 
 void handleTelnet(){

@@ -29,24 +29,14 @@ void setup() {
   
   version = readMD5();
   strcpy(md5value, version.c_str());
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> try
   memset(unameenc,0,sizeof(unameenc));
   base64_encode(unameenc, uname, strlen(uname));
 
   connectWifi();
   WiFi.onEvent(WiFiEvent);
-<<<<<<< HEAD
   
-  determineStartValues();
-  
-=======
-
   //determineStartValues();
->>>>>>> try
   uploadStack();
 
   pinMode(pinGas, INPUT_PULLUP);
@@ -69,18 +59,6 @@ void setup() {
   ArduinoOTA.setPort(8266);
   ArduinoOTA.setHostname("ESP8266-Meterkast");
   // ArduinoOTA.setPassword((const char *)"123");
-<<<<<<< HEAD
-  ArduinoOTA.onStart([]() {
-    Serial.println("Start");
-  });
-  ArduinoOTA.onEnd([]() {
-    Serial.println("\nEnd");
-  });
-  ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-    Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
-  });
-=======
->>>>>>> try
   ArduinoOTA.onError([](ota_error_t error) {
     Serial.printf("Error[%u]: ", error);
     if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
