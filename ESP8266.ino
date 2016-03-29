@@ -1,5 +1,4 @@
 #include <EEPROM.h>
-#include <ArduinoOTA.h>
 #include <stdio.h>
 #include <FS.h>
 #include <ESP8266WiFi.h>
@@ -58,16 +57,11 @@ void setup() {
   Alarm.timerRepeat(60, doUpdate);
   Alarm.timerRepeat(30, saveValues);
 
-  ArduinoOTA.setPort(8266);
-  ArduinoOTA.setHostname("ESP8266-Meterkast");
-  // ArduinoOTA.setPassword((const char *)"123");
-  ArduinoOTA.begin();
   telnetServer.begin();
   telnetServer.setNoDelay(true);
 }
 
 void loop() { 
-  ArduinoOTA.handle();
   handleTelnet();
   if (energiepuls == 1){
     energiepuls = 0;
