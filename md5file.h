@@ -12,7 +12,7 @@ String readFile(String pad) {
 }
 
 void saveValues() {
-  File values = SPIFFS.open("/values.txt", "w");
+  File values = SPIFFS.open("/values.txt", "w+");
   if (!values) {
     Serial.println("Failed to open config file for writing");
   }
