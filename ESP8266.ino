@@ -9,6 +9,7 @@
 #include <TimeAlarms.h>
 #include <user_interface.h>
 #include <ESP8266httpUpdate.h>
+#include <ESP8266WebServer.h>
 #include "constants.h"
 #include "cont.h"
 #include "eeprom.h"
@@ -59,9 +60,18 @@ void setup() {
 
   telnetServer.begin();
   telnetServer.setNoDelay(true);
+
+  server.on("/update_esp8266", [](){
+    if(!server.authenticate(www_username, www_password))
+      return server.requestAuthentication();
+    server.send(200, "text/plain", "Login Succes, updating start..");
+    doUpdate();
+  });
+  server.begin();
 }
 
 void loop() { 
+  server.handleClient();
   handleTelnet();
   if (energiepuls == 1){
     energiepuls = 0;

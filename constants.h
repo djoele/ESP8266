@@ -18,6 +18,9 @@ String version;
 char md5value[1024] = "empty";
 const char * fingerprint = "25 20 A9 23 D7 21 A4 1D D2 A2 E1 E4 7E 56 0C BB FA 58 0E E0";
 
+const char* www_username = "djoele";
+const char* www_password = "@jP6Aq03";
+
 char uname[] = "djoele:@jP6Aq03";
 char unameenc[40];
 
@@ -67,3 +70,5 @@ time_t tijdsduur2 = 0;
 WiFiServer telnetServer(23);
 WiFiClient serverClient;
 unsigned long startTimeWifi = millis();
+
+ESP8266WebServer server(80);
