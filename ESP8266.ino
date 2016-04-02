@@ -55,7 +55,6 @@ void setup() {
   Alarm.timerRepeat(55, uploadEnergie1);
   Alarm.timerRepeat(300, uploadWater);
   Alarm.timerRepeat(350, uploadGas);
-  Alarm.timerRepeat(60, doUpdate);
   Alarm.timerRepeat(30, saveValues);
 
   telnetServer.begin();
