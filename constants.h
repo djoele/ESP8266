@@ -27,7 +27,6 @@ char unameenc[40];
 const char* updateString = "/json.htm?type=command&param=udevice&idx=";
 const char* updateCounter = "&svalue=";
 const char* updateElectricityOrText = "&nvalue=0&svalue=";
-const char* updateGas = "&svalue=0&svalue=";
 
 //Energie
 int counter = 0;

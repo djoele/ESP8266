@@ -83,13 +83,13 @@ void determineStartValues() {
       counter1 = atoi(p);
     }
     if (teller == 2) {
-      counter2 = (atoi(p) / 10);
+      counter2 = atoi(p);
     }
     p = strtok (NULL, " ");
     teller = teller + 1;
     delay(5);
   }
-  Serial.println(String("Start values: ") + counter + "," + counter1 + "," + counter2);
+  //Serial.println(String("Start values: ") + counter + "," + counter1 + "," + counter2);
 }
 
 void uploadValueToDomoticz(int id, const char* updateString2, const char* type, int value, int value2) {
@@ -97,6 +97,8 @@ void uploadValueToDomoticz(int id, const char* updateString2, const char* type, 
   if (type == "Huidig energieverbruik") {
     url = String(updateString) + id + String(updateString2) + value + ";" + value2;
   }
+  //serverClient.println(String("Huidige values: ") + counter + "," + counter1 + "," + counter2);
+  //serverClient.println("Call naar: " + url);
   callURL(url, host, httpPort, unameenc);
 }
 
@@ -109,7 +111,7 @@ void uploadResetinfoToDomoticz(int id, const char* updateString2, const char* ty
 }
 
 void uploadGas() {
-  uploadValueToDomoticz(ID2, updateGas, type2, counter2, -1);
+  uploadValueToDomoticz(ID2, updateCounter, type2, counter2, -1);
 }
 
 void uploadWater() {
