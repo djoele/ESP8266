@@ -36,8 +36,7 @@ void setup() {
 
   //FOR RESET saveValues();
   determineStartValues();
-  uploadStack();
-
+  
   pinMode(pinGas, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(pinGas), pinupGas, FALLING);
 
@@ -54,7 +53,7 @@ void setup() {
   Alarm.timerRepeat(300, uploadWater);
   Alarm.timerRepeat(350, uploadGas);
   Alarm.timerRepeat(30, saveValues);
-
+  
   telnetServer.begin();
   telnetServer.setNoDelay(true);
 
@@ -65,6 +64,8 @@ void setup() {
     doUpdate();
   });
   server.begin();
+
+  uploadStack();
 }
 
 void loop() { 

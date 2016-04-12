@@ -51,24 +51,33 @@ void WiFiEvent(WiFiEvent_t event) {
   }
 }
 
-void callURL(String url, const char* host, const int port, String unameenc) {
-  WiFiClientSecure client;
-  if (!client.connect(host, httpsPort)) {
-    serverClient.println("connection failed");
-    return;
+WiFiClient callURL(String url, const char* host, const int port, String unameenc) {
+  WiFiClient client;
+  if (!client.connect(host, port)) {
+    return client;
   }
-
-  if (client.verify(fingerprint, host)) {
-    serverClient.println("certificate matches");
-  } else {
-    serverClient.println("certificate doesn't match");
-     return;
-  }
-  
   client.print(String("GET ") + url + " HTTP/1.1\r\n" +
                "Host: " + host + "\r\n" +
                "Authorization: Basic " + unameenc + " \r\n" + 
                "Connection: close\r\n\r\n");
+  return client;
+}
+
+void callURL2(String url, const char* host, const int port) {
+  HTTPClient http;
+  http.begin(host, port, url, true, fingerprint);
+  http.setAuthorization(www_username,www_password);
+  
+  int httpCode = http.GET();
+  if(httpCode > 0) {
+  //serverClient.printf("[HTTP] GET... code: %d\n", httpCode);
+  //serverClient.println(String("[HTTP] GET... url: ") + url);
+  if(httpCode == HTTP_CODE_OK) {
+    }
+    } else {
+       serverClient.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
+    }
+    http.end();
 }
                
 void determineStartValues() {
@@ -107,7 +116,7 @@ void uploadValueToDomoticz(int id, const char* updateString2, const char* type, 
   }
   //serverClient.println(String("Huidige values: ") + counter + "," + counter1 + "," + counter2);
   //serverClient.println("Call naar: " + url);
-  callURL(url, host, httpsPort, unameenc);
+  callURL2(url, host, httpsPort);
 }
 
 void uploadResetinfoToDomoticz(int id, const char* updateString2, const char* type, String value, int value2) {
@@ -115,7 +124,8 @@ void uploadResetinfoToDomoticz(int id, const char* updateString2, const char* ty
   if (type == "Huidig energieverbruik") {
     url = String(updateString) + id + String(updateString2) + value + ";" + value2;
   }
-  callURL(url, host, httpsPort, unameenc);
+  callURL(url, host, httpPort, unameenc);
+  //callURL2(url, host, httpsPort);
 }
 
 void uploadGas() {

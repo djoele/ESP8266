@@ -4,7 +4,8 @@ const int pinWater = 12;
 
 const char* ssid = "VGV7519B5207C";
 const char* password = "Wachtwoord";
-const char* host = "framboos-domotica.tk";
+const char* host = "192.168.2.3";
+const int httpPort = 8080;
 const int httpsPort = 443;
 const int httpPort2 = 3000;
 
