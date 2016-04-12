@@ -70,11 +70,9 @@ void callURL2(String url, const char* host, const int port) {
   
   int httpCode = http.GET();
   if(httpCode > 0) {
-  serverClient.printf("[HTTP] GET... code: %d\n", httpCode);
-  serverClient.println(String("[HTTP] GET... url: ") + url);
+  //serverClient.printf("[HTTP] GET... code: %d\n", httpCode);
+  //serverClient.println(String("[HTTP] GET... url: ") + url);
   if(httpCode == HTTP_CODE_OK) {
-    String payload = http.getString();
-    //serverClient.println(payload);
     }
     } else {
        serverClient.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
@@ -127,6 +125,7 @@ void uploadResetinfoToDomoticz(int id, const char* updateString2, const char* ty
     url = String(updateString) + id + String(updateString2) + value + ";" + value2;
   }
   callURL(url, host, httpPort, unameenc);
+  //callURL2(url, host, httpsPort);
 }
 
 void uploadGas() {

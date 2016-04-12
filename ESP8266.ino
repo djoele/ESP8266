@@ -37,8 +37,7 @@ void setup() {
 
   //FOR RESET saveValues();
   determineStartValues();
-  uploadStack();
-
+  
   pinMode(pinGas, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(pinGas), pinupGas, FALLING);
 
@@ -66,6 +65,8 @@ void setup() {
     doUpdate();
   });
   server.begin();
+
+  uploadStack();
 }
 
 void loop() { 
