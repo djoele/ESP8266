@@ -51,16 +51,24 @@ void WiFiEvent(WiFiEvent_t event) {
   }
 }
 
-WiFiClient callURL(String url, const char* host, const int port, String unameenc) {
-  WiFiClient client;
-  if (!client.connect(host, port)) {
-    return client;
+void callURL(String url, const char* host, const int port, String unameenc) {
+  WiFiClientSecure client;
+  if (!client.connect(host, httpsPort)) {
+    serverClient.println("connection failed");
+    return;
   }
+
+  if (client.verify(fingerprint, host)) {
+    serverClient.println("certificate matches");
+  } else {
+    serverClient.println("certificate doesn't match");
+     return;
+  }
+  
   client.print(String("GET ") + url + " HTTP/1.1\r\n" +
                "Host: " + host + "\r\n" +
                "Authorization: Basic " + unameenc + " \r\n" + 
                "Connection: close\r\n\r\n");
-  return client;
 }
                
 void determineStartValues() {
@@ -99,7 +107,7 @@ void uploadValueToDomoticz(int id, const char* updateString2, const char* type, 
   }
   //serverClient.println(String("Huidige values: ") + counter + "," + counter1 + "," + counter2);
   //serverClient.println("Call naar: " + url);
-  callURL(url, host, httpPort, unameenc);
+  callURL(url, host, httpsPort, unameenc);
 }
 
 void uploadResetinfoToDomoticz(int id, const char* updateString2, const char* type, String value, int value2) {
@@ -107,7 +115,7 @@ void uploadResetinfoToDomoticz(int id, const char* updateString2, const char* ty
   if (type == "Huidig energieverbruik") {
     url = String(updateString) + id + String(updateString2) + value + ";" + value2;
   }
-  callURL(url, host, httpPort, unameenc);
+  callURL(url, host, httpsPort, unameenc);
 }
 
 void uploadGas() {

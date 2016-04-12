@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <FS.h>
 #include <ESP8266WiFi.h>
-#include <ESP8266HTTPClient.h>
 #include <Time.h>
 #include <TimeLib.h>
 #include <TimeAlarms.h>
