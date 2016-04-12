@@ -62,6 +62,25 @@ WiFiClient callURL(String url, const char* host, const int port, String unameenc
                "Connection: close\r\n\r\n");
   return client;
 }
+
+void callURL2(String url, const char* host, const int port) {
+  HTTPClient http;
+  http.begin(host, port, url, true, fingerprint);
+  http.setAuthorization(www_username,www_password);
+  
+  int httpCode = http.GET();
+  if(httpCode > 0) {
+  serverClient.printf("[HTTP] GET... code: %d\n", httpCode);
+  serverClient.println(String("[HTTP] GET... url: ") + url);
+  if(httpCode == HTTP_CODE_OK) {
+    String payload = http.getString();
+    //serverClient.println(payload);
+    }
+    } else {
+       serverClient.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
+    }
+    http.end();
+}
                
 void determineStartValues() {
   if(!SPIFFS.exists("/values.txt")){
@@ -99,7 +118,7 @@ void uploadValueToDomoticz(int id, const char* updateString2, const char* type, 
   }
   //serverClient.println(String("Huidige values: ") + counter + "," + counter1 + "," + counter2);
   //serverClient.println("Call naar: " + url);
-  callURL(url, host, httpPort, unameenc);
+  callURL2(url, host, httpsPort);
 }
 
 void uploadResetinfoToDomoticz(int id, const char* updateString2, const char* type, String value, int value2) {

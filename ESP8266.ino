@@ -55,7 +55,7 @@ void setup() {
   Alarm.timerRepeat(300, uploadWater);
   Alarm.timerRepeat(350, uploadGas);
   Alarm.timerRepeat(30, saveValues);
-
+  
   telnetServer.begin();
   telnetServer.setNoDelay(true);
 
