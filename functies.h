@@ -51,23 +51,11 @@ void WiFiEvent(WiFiEvent_t event) {
   }
 }
 
-WiFiClient callURL(String url, const char* host, const int port, String unameenc) {
-  WiFiClient client;
-  if (!client.connect(host, port)) {
-    return client;
-  }
-  client.print(String("GET ") + url + " HTTP/1.1\r\n" +
-               "Host: " + host + "\r\n" +
-               "Authorization: Basic " + unameenc + " \r\n" + 
-               "Connection: close\r\n\r\n");
-  return client;
-}
-
 void callURL2(String url, const char* host, const int port) {
   HTTPClient http;
   http.begin(host, port, url, true, fingerprint);
   http.setAuthorization(www_username,www_password);
-  
+
   int httpCode = http.GET();
   if(httpCode > 0) {
   //serverClient.printf("[HTTP] GET... code: %d\n", httpCode);
@@ -107,6 +95,7 @@ void determineStartValues() {
     delay(5);
   }
   //Serial.println(String("Start values: ") + counter + "," + counter1 + "," + counter2);
+  free(buffer);
 }
 
 void uploadValueToDomoticz(int id, const char* updateString2, const char* type, int value, int value2) {
@@ -117,15 +106,6 @@ void uploadValueToDomoticz(int id, const char* updateString2, const char* type, 
   //serverClient.println(String("Huidige values: ") + counter + "," + counter1 + "," + counter2);
   //serverClient.println("Call naar: " + url);
   callURL2(url, host, httpsPort);
-}
-
-void uploadResetinfoToDomoticz(int id, const char* updateString2, const char* type, String value, int value2) {
-  String url = String(updateString) + id + String(updateString2) + value;
-  if (type == "Huidig energieverbruik") {
-    url = String(updateString) + id + String(updateString2) + value + ";" + value2;
-  }
-  callURL(url, host, httpPort, unameenc);
-  //callURL2(url, host, httpsPort);
 }
 
 void uploadGas() {
@@ -146,13 +126,14 @@ void  uploadEnergie2() {
   uploadValueToDomoticz(ID, updateElectricityOrText, type, counter, -1);
 }
 
-void uploadStack(){
+String loadStack(){
+  Serial.print(String("free heap") + ESP.getFreeHeap() + "\n");
   char *rinfo;
   String reset;
   reset = ESP.getResetInfo();
   rinfo = &reset[0];
   char rr[1000];
- 
+
   eeprom_read_string(0, buf, EEPROM_MAX_ADDR);
   String stack = urlencode(buf);
   const char find[4] = "ctx";
@@ -167,8 +148,10 @@ void uploadStack(){
   strcat(rr, (const char *)ret);
 
   String bla = urlencode(rr);
+  free(rr);
+  free((char*)stackkie);
   Serial.println(bla);
-  uploadResetinfoToDomoticz(ID3, updateElectricityOrText, type3, bla, -1);
+  return bla;
 }
 
 void handleTelnet(){

@@ -27,6 +27,8 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   char cont[14];
   char nctx[14];
   char spi[50];
+  char buf[EEPROM_MAX_ADDR];
+  char buf2[1000];
   
   if (rst_info->reason == REASON_EXCEPTION_RST) {
      sprintf(exception,"Exception (%i):\nepc1=0x%08x epc2=0x%08x epc3=0x%08x excvaddr=0x%08x depc=0x%08x\n",
@@ -73,5 +75,8 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   EEPROM.commit();
   eeprom_write_string(0, buf);
   EEPROM.commit();
+
+  free(buf2);
+  free(buf);
 } 
 

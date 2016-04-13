@@ -5,14 +5,13 @@ const int pinWater = 12;
 const char* ssid = "VGV7519B5207C";
 const char* password = "Wachtwoord";
 const char* host = "framboos-domotica.tk";
-const int httpPort = 8080;
 const int httpsPort = 443;
-const int httpPort2 = 3000;
 
 const int EEPROM_MIN_ADDR = 0;
 const int EEPROM_MAX_ADDR = 4096/2;
 char buf[EEPROM_MAX_ADDR];
 char buf2[1000];
+String stack;
 
 const char * updateurl = "https://framboos-domotica.tk:443/update_esp8266";
 String version;

@@ -24,6 +24,8 @@ void setup() {
   
   EEPROM.begin(EEPROM_MAX_ADDR);
   SPIFFS.begin();
+
+  stack = loadStack();
   
   version = readFile("/md5.txt");
   strcpy(md5value, version.c_str());
@@ -63,9 +65,20 @@ void setup() {
     server.send(200, "text/plain", "Login Succes, updating start..");
     doUpdate();
   });
+  server.on("/get_stack", [](){
+    if(!server.authenticate(www_username, www_password))
+      return server.requestAuthentication();
+      String returnstack = "https://" + String(host) + ":" + String(httpsPort) + String(updateString) + String(ID3) + String(updateElectricityOrText) + stack;      
+      if (stack!="NONE"){
+       server.send(200, "text/plain", returnstack);
+      } else {
+        server.send(200, "text/plain", stack);
+      }
+    stack = "NONE";
+  });
   server.begin();
 
-  uploadStack();
+  //uploadStack(stack);
 }
 
 void loop() { 
