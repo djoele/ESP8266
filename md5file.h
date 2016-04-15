@@ -2,7 +2,7 @@ String readFile(String pad) {
   File f = SPIFFS.open(pad, "r");
   String line;
   if (!f) {
-    return "Error reading file";
+    return "Error";
   }
   while (f.available()) {
     line = f.readStringUntil('\n');
@@ -14,8 +14,12 @@ String readFile(String pad) {
 void saveValues() {
   File values = SPIFFS.open("/values.txt", "w+");
   if (!values) {
-    Serial.println("Failed to open config file for writing");
+    #ifdef DEBUG
+    Serial.println("Error: schrijven van values in niet gelukt...");
+    #endif
+    return;
   }
-  values.println(String("") + counter + " " + counter1 + " " + counter2);
+  values.println(String("") + counter + " " + counter1 + " " + counter2); 
+  //values.println(String("") + 51375 + " " + 1938 + " " + 200);
   values.close();
 }

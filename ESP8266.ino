@@ -1,5 +1,6 @@
+//#define DEBUG
+
 #include <EEPROM.h>
-#include <stdio.h>
 #include <FS.h>
 #include <ESP8266WiFi.h>
 #include <Time.h>
@@ -19,16 +20,21 @@
 #include "update.h"
 
 void setup() {
+  #ifdef DEBUG
   Serial.begin(115200);
   Serial.setDebugOutput(true);
+  #endif
   
   EEPROM.begin(EEPROM_MAX_ADDR);
   SPIFFS.begin();
-
+  
   stack = loadStack();
   
   version = readFile("/md5.txt");
   strcpy(md5value, version.c_str());
+  #ifdef DEBUG
+  Serial.println(String("Gelezen md5 uit file: ") + md5value);
+  #endif
 
   memset(unameenc,0,sizeof(unameenc));
   base64_encode(unameenc, uname, strlen(uname));
@@ -36,7 +42,8 @@ void setup() {
   connectWifi();
   WiFi.onEvent(WiFiEvent);
 
-  //FOR RESET saveValues();
+  //FOR RESET eerst alleen saveValues, daarna die uit en dan weer determineStartValues
+  //saveValues();
   determineStartValues();
   
   pinMode(pinGas, INPUT_PULLUP);
@@ -55,9 +62,11 @@ void setup() {
   Alarm.timerRepeat(300, uploadWater);
   Alarm.timerRepeat(350, uploadGas);
   Alarm.timerRepeat(30, saveValues);
-  
+
+  #ifdef DEBUG
   telnetServer.begin();
   telnetServer.setNoDelay(true);
+  #endif
 
   server.on("/update_esp8266", [](){
     if(!server.authenticate(www_username, www_password))
@@ -65,25 +74,22 @@ void setup() {
     server.send(200, "text/plain", "Login Succes, updating start..");
     doUpdate();
   });
-  server.on("/get_stack", [](){
-    if(!server.authenticate(www_username, www_password))
-      return server.requestAuthentication();
-      String returnstack = "https://" + String(host) + ":" + String(httpsPort) + String(updateString) + String(ID3) + String(updateElectricityOrText) + stack;      
-      if (stack!="NONE"){
-       server.send(200, "text/plain", returnstack);
-      } else {
-        server.send(200, "text/plain", stack);
-      }
-    stack = "NONE";
-  });
   server.begin();
 
-  //uploadStack(stack);
+  #ifdef DEBUG
+  Serial.println("Start uploading stack...");
+  #endif
+  uploadStack();
+  #ifdef DEBUG
+  Serial.println("Klaar uploading stack...");
+  #endif
 }
 
 void loop() { 
   server.handleClient();
+  #ifdef DEBUG
   handleTelnet();
+  #endif
   if (energiepuls == 1){
     energiepuls = 0;
     counter++;
@@ -91,21 +97,29 @@ void loop() {
     tijdsduur = pulsetijd - begintijd;
     begintijd = pulsetijd;
     huidigverbruik = floor(3600 / tijdsduur);
-    serverClient.println(String("Huidig verbruik: ") + huidigverbruik);
+    #ifdef DEBUG
+    serverClient.println(String("Energiepuls: ") + huidigverbruik);
+    #endif
   }
   if (gaspuls == 1){
     gaspuls = 0;
     counter2++;
-    serverClient.println(String("Gaspuls gedetecteerd: ") + counter2);
+    #ifdef DEBUG
+    serverClient.println(String("Gaspuls: ") + counter2);
+    #endif
   }
   pulsetaskwater();
   if (waterpuls == 1){
     triggernu = now();
     tijdsduur2 = triggernu - triggertijd;
+    #ifdef DEBUG
     serverClient.println(String("Tijdsduur tot vorige waterpuls: ") + tijdsduur2);
+    #endif
     if (tijdsduur2 > 3) {
       counter1++;
+      #ifdef DEBUG
       serverClient.println(String("Waterpuls gedetecteerd: ") + counter1);
+      #endif
     }  
     triggertijd = now();
     waterpuls = 0;

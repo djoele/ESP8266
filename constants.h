@@ -66,8 +66,10 @@ time_t triggertijd = now();
 time_t triggernu = now();
 time_t tijdsduur2 = 0;
 
-WiFiServer telnetServer(23);
-WiFiClient serverClient;
 unsigned long startTimeWifi = millis();
 
+#ifdef DEBUG
+WiFiServer telnetServer(23);
+WiFiClient serverClient;
+#endif
 ESP8266WebServer server(80);
