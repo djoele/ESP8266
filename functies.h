@@ -113,7 +113,7 @@ void uploadStack(){
   String reset;
   reset = ESP.getResetInfo();
   rinfo = &reset[0];
-  char rr[500];
+  char rr[1000];
  
   eeprom_read_string(0, buf, EEPROM_MAX_ADDR);
   String stack = urlencode(buf);

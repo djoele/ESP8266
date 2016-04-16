@@ -20,6 +20,6 @@ void saveValues() {
     return;
   }
   values.println(String("") + counter + " " + counter1 + " " + counter2); 
-  //values.println(String("") + 51375 + " " + 1938 + " " + 200);
+  //values.println(String("") + 51375 + " " + 1938 + " " + 20);
   values.close();
 }
