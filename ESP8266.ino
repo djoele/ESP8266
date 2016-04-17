@@ -1,4 +1,4 @@
-//#define DEBUG
+#define DEBUG
 
 #include <EEPROM.h>
 #include <FS.h>
@@ -33,13 +33,23 @@ void setup() {
   version = readFile("/md5.txt");
   strcpy(md5value, version.c_str());
   #ifdef DEBUG
-  Serial.println(String("Gelezen md5 uit file: ") + md5value);
+  Serial.println(String("[MD5] Gelezen md5 uit file: ") + md5value);
   #endif
 
+  sha = readFile("/sha.txt");
+  fingerprint = sha.c_str();
+  strcpy(shavalue, sha.c_str());
+  #ifdef DEBUG
+  Serial.println(String("[SHA] Gelezen sha uit file: ") + shavalue);
+  #endif
+  
   memset(unameenc,0,sizeof(unameenc));
   base64_encode(unameenc, uname, strlen(uname));
 
   connectWifi();
+  #ifdef DEBUG
+  Serial.print(F("[WIFI] Verbonden met Wifi"));
+  #endif
   WiFi.onEvent(WiFiEvent);
 
   //FOR RESET eerst alleen saveValues, daarna die uit en dan weer determineStartValues
@@ -74,14 +84,33 @@ void setup() {
     server.send(200, "text/plain", "Login Succes, updating start..");
     doUpdate();
   });
+  server.on("/update_sha", HTTP_POST, [](){
+    if(!server.authenticate(www_username, www_password))
+      return server.requestAuthentication();
+    server.send(200, "text/plain", "Login Succes, updating sha..");    
+    #ifdef DEBUG
+    serverClient.println(F("[SHA] Login Succes, updating sha.."));
+    #endif 
+    saveSHA(server.arg("sha"));
+    sha = readFile("/sha.txt");
+    strcpy(shavalue, sha.c_str());
+
+    sha = readFile("/sha.txt");
+    strcpy(shavalue, sha.c_str());
+    #ifdef DEBUG
+    serverClient.println(String("[SHA] Gelezen sha uit file na update: ") + shavalue);
+    serverClient.println(F("[SHA]Nu herstart..."));
+    #endif
+    ESP.reset();
+  });
   server.begin();
 
   #ifdef DEBUG
-  Serial.println("Start uploading stack...");
+  Serial.println(F("[STACK] Start uploading stack..."));
   #endif
   uploadStack();
   #ifdef DEBUG
-  Serial.println("Klaar uploading stack...");
+  Serial.println(F("[STACK] Klaar uploading stack..."));
   #endif
 }
 
@@ -98,14 +127,14 @@ void loop() {
     begintijd = pulsetijd;
     huidigverbruik = floor(3600 / tijdsduur);
     #ifdef DEBUG
-    serverClient.println(String("Energiepuls: ") + huidigverbruik);
+    serverClient.println(String("[PULS] Energiepuls: ") + huidigverbruik);
     #endif
   }
   if (gaspuls == 1){
     gaspuls = 0;
     counter2++;
     #ifdef DEBUG
-    serverClient.println(String("Gaspuls: ") + counter2);
+    serverClient.println(String("[PULS] Gaspuls: ") + counter2);
     #endif
   }
   pulsetaskwater();
@@ -113,12 +142,12 @@ void loop() {
     triggernu = now();
     tijdsduur2 = triggernu - triggertijd;
     #ifdef DEBUG
-    serverClient.println(String("Tijdsduur tot vorige waterpuls: ") + tijdsduur2);
+    serverClient.println(String("[PULS] Tijdsduur tot vorige waterpuls: ") + tijdsduur2);
     #endif
     if (tijdsduur2 > 3) {
       counter1++;
       #ifdef DEBUG
-      serverClient.println(String("Waterpuls gedetecteerd: ") + counter1);
+      serverClient.println(String("[PULS] Waterpuls gedetecteerd: ") + counter1);
       #endif
     }  
     triggertijd = now();

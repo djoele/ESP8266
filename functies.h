@@ -34,7 +34,13 @@ String urlencode(String str)
 
 void connectWifi() {
   WiFi.begin(ssid, password);
+  #ifdef DEBUG
+  Serial.print(F("[WIFI] Verbinden met Wifi"));
+  #endif
   while (WiFi.status() != WL_CONNECTED) {
+    #ifdef DEBUG
+    Serial.print(F("."));
+    #endif
     delay(1);
     ESP.wdtFeed();
   }
@@ -51,9 +57,9 @@ void WiFiEvent(WiFiEvent_t event) {
   }
 }
 
-void callURL2(String url, const char* host, const int port) {
+void callURL2(String url, String host, const int port) {
   HTTPClient http;
-  http.begin(host, port, url, true, fingerprint);
+  http.begin(host, port, url, fingerprint);
   http.setAuthorization(www_username,www_password);
   int httpCode = http.GET();
   if(httpCode > 0) {
@@ -67,13 +73,13 @@ void callURL2(String url, const char* host, const int port) {
 void determineStartValues() {
   if(!SPIFFS.exists("/values.txt")){
     #ifdef DEBUG
-    Serial.println("values.txt bestaat niet");
+    Serial.println(F("[VALUES] values.txt bestaat niet"));
     #endif
     saveValues();
   }
   String bufferin = readFile("/values.txt");
   #ifdef DEBUG
-  Serial.println("Bufferin: " + bufferin);
+  Serial.println("[VALUES] Bufferin: " + bufferin);
   #endif
   char buffer[1024];
   strcpy(buffer,bufferin.c_str());
@@ -96,7 +102,7 @@ void determineStartValues() {
     delay(5);
   }
   #ifdef DEBUG
-  Serial.println(String("Gelezen values op basis van bufferin: ") + counter + " " + counter1 + " " + counter2);
+  Serial.println(String("[VALUES] Gelezen values op basis van bufferin: ") + counter + " " + counter1 + " " + counter2);
   #endif
 }
 
@@ -129,7 +135,9 @@ void uploadStack(){
   strcat(rr, (const char *)ret);
 
   String bla = urlencode(rr);
-  Serial.println(bla);
+  #ifdef DEBUG
+  Serial.println(String("[STACK] ") + bla);
+   #endif
   uploadResetinfoToDomoticz(ID3, updateElectricityOrText, type3, bla, -1);
 }
 
@@ -182,7 +190,7 @@ String loadStack(){
 
   String bla = urlencode(rr);
   #ifdef DEBUG
-  Serial.println(String("Stack gelezen:") + bla);
+  Serial.println(String("[STACK] Stack gelezen:") + bla);
   #endif
   return bla;
 }
