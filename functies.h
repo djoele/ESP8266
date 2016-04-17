@@ -33,6 +33,10 @@ String urlencode(String str)
 }
 
 void connectWifi() {
+  #ifdef DEBUG
+  Serial.println(String("[WIFI] ssid: ") + ssid);
+  Serial.println(String("[WIFI] password: ") + password);
+  #endif
   WiFi.begin(ssid, password);
   #ifdef DEBUG
   Serial.print(F("[WIFI] Verbinden met Wifi"));

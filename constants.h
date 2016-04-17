@@ -2,9 +2,6 @@ const int pinEnergie = 5;
 const int pinGas = 0;
 const int pinWater = 12;
 
-const char* updateurl = "https://framboos-domotica.tk:443/update_esp8266";
-const char* ssid = "VGV7519B5207C";
-const char* password = "Wachtwoord";
 const String host = "framboos-domotica.tk";
 const int httpsPort = 443;
 
@@ -21,6 +18,9 @@ char shavalue[60] = "";
 const char * fingerprint;
 //= "25:20:A9:23:D7:21:A4:1D:D2:A2:E1:E4:7E:56:0C:BB:FA:58:0E E0";
 
+const char* updateurl = "https://framboos-domotica.tk:443/update_esp8266";
+const char* ssid = "VGV7519B5207C";
+const char* password = "Wachtwoord";
 const char* www_username = "djoele";
 const char* www_password = "@jP6Aq03";
 

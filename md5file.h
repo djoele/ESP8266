@@ -13,8 +13,7 @@ String readFile(String pad) {
 
 void saveValues() {
   #ifdef DEBUG
-  serverClient.print(F("[HEAP] FreeHeap : "));
-  serverClient.println(ESP.getFreeHeap());
+  serverClient.println(String("[HEAP] FreeHeap : ") + ESP.getFreeHeap());
   #endif
   File values = SPIFFS.open("/values.txt", "w+");
   if (!values) {
