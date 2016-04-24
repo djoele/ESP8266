@@ -1,5 +1,9 @@
 #define DEBUG
 
+//#define _CRTDBG_MAP_ALLOC
+//#include <stdlib.h>
+#//include <crtdbg.h>
+
 #include <EEPROM.h>
 #include <FS.h>
 #include <ESP8266WiFi.h>
@@ -51,7 +55,7 @@ void setup() {
   Serial.print(F("[WIFI] Verbonden met Wifi"));
   #endif
   WiFi.onEvent(WiFiEvent);
-
+  
   //FOR RESET eerst alleen saveValues, daarna die uit en dan weer determineStartValues
   //saveValues();
   determineStartValues();
@@ -72,6 +76,7 @@ void setup() {
   Alarm.timerRepeat(300, uploadWater);
   Alarm.timerRepeat(350, uploadGas);
   Alarm.timerRepeat(30, saveValues);
+  Alarm.timerRepeat(60, uploadHeap);
 
   #ifdef DEBUG
   telnetServer.begin();
@@ -83,6 +88,18 @@ void setup() {
       return server.requestAuthentication();
     server.send(200, "text/plain", "Login Succes, updating start..");
     doUpdate();
+  });
+  server.on("/test", [](){
+    if(!server.authenticate(www_username, www_password))
+      return server.requestAuthentication();
+    server.send(200, "text/plain", "test");
+    uploadStack();
+  });
+  server.on("/reset", [](){
+    if(!server.authenticate(www_username, www_password))
+      return server.requestAuthentication();
+    server.send(200, "text/plain", "ESP8266 gaat resetten..");
+    ESP.reset();
   });
   server.on("/update_sha", HTTP_POST, [](){
     if(!server.authenticate(www_username, www_password))
@@ -112,6 +129,7 @@ void setup() {
   #ifdef DEBUG
   Serial.println(F("[STACK] Klaar uploading stack..."));
   #endif
+  uploadValueToDomoticz(ID5, updateCounter, type1, 100, -1);
 }
 
 void loop() { 

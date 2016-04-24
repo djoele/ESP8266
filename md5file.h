@@ -12,9 +12,6 @@ String readFile(String pad) {
 }
 
 void saveValues() {
-  #ifdef DEBUG
-  serverClient.println(String("[HEAP] FreeHeap : ") + ESP.getFreeHeap());
-  #endif
   File values = SPIFFS.open("/values.txt", "w+");
   if (!values) {
     #ifdef DEBUG
@@ -23,7 +20,6 @@ void saveValues() {
     return;
   }
   values.println(String("") + counter + " " + counter1 + " " + counter2); 
-  //values.println(String("") + 51375 + " " + 1938 + " " + 20);
   values.close();
 }
 

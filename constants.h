@@ -6,7 +6,7 @@ const String host = "framboos-domotica.tk";
 const int httpsPort = 443;
 
 const int EEPROM_MIN_ADDR = 0;
-const int EEPROM_MAX_ADDR = 4096/2;
+const int EEPROM_MAX_ADDR = 4096;
 char buf[EEPROM_MAX_ADDR];
 char buf2[1000];
 String stack;
@@ -54,6 +54,10 @@ volatile int gaspuls = 0;
 //Error
 const int ID3 = 25;
 const char* type3 = "Error";
+
+//Heap
+const int ID5 = 28;
+const uint32_t heap = ESP.getFreeHeap();
 
 //Huidig verbruik
 int huidigverbruik = 0;
