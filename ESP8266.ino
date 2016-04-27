@@ -1,9 +1,5 @@
 #define DEBUG
 
-//#define _CRTDBG_MAP_ALLOC
-//#include <stdlib.h>
-#//include <crtdbg.h>
-
 #include <EEPROM.h>
 #include <FS.h>
 #include <ESP8266WiFi.h>
@@ -13,6 +9,7 @@
 #include <user_interface.h>
 #include <ESP8266httpUpdate.h>
 #include <ESP8266WebServer.h>
+#include <ESP8266HTTPClient.h>
 #include "constants.h"
 #include "cont.h"
 #include "eeprom.h"
@@ -106,7 +103,7 @@ void setup() {
       return server.requestAuthentication();
     server.send(200, "text/plain", "Login Succes, updating sha..");    
     #ifdef DEBUG
-    serverClient.println(F("[SHA] Login Succes, updating sha.."));
+      serverClient.println(F("[SHA] Login Succes, updating sha.."));
     #endif 
     saveSHA(server.arg("sha"));
     sha = readFile("/sha.txt");
