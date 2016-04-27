@@ -176,6 +176,9 @@ void  uploadEnergie2() {
 void uploadHeap() {
   uint32_t heapnu = ESP.getFreeHeap();
   float perc = ((float)heapnu/(float)heap)*100;
+  #ifdef DEBUG
+    serverClient.println(String("[HEAP] FreeHeap : ") + ESP.getFreeHeap() + ", " + perc + "%");
+  #endif
   uploadValueToDomoticz(ID5, updateElectricityOrText, type, perc, -1);
 }
 

@@ -12,10 +12,6 @@ String readFile(String pad) {
 }
 
 void saveValues() {
-  #ifdef DEBUG
-    serverClient.println(String("[HEAP] FreeHeap : ") + ESP.getFreeHeap());
-  #endif
-
   File values = SPIFFS.open("/values.txt", "w+");
   if (!values) {
     #ifdef DEBUG
@@ -35,3 +31,4 @@ void saveSHA(String s) {
   sha.println(s.c_str());
   sha.close();
 }
+
