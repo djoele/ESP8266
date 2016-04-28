@@ -1,5 +1,5 @@
 String getStack(uint32_t starter, uint32_t ender, uint32_t offset){
-  char stack_self[1000] = "";
+  char stack_self[1200] = "";
   char stack_self2[46];
   const char stack_begin[15] = "\n>>>stack>>>\n";
   const char stack_end[13] = "<<<stack<<<\n";
@@ -22,13 +22,13 @@ String getStack(uint32_t starter, uint32_t ender, uint32_t offset){
 extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack, uint32_t stack_end ){    
   register uint32_t sp asm("a1");
   cont_t g_cont __attribute__ ((aligned (16)));
-  char result[3000];
+  char result[2000];
   char exception[300];
   char cont[14];
   char nctx[14];
   char spi[50];
   char buf[EEPROM_MAX_ADDR];
-  char buf2[1000];
+  char buf2[1200];
   
   if (rst_info->reason == REASON_EXCEPTION_RST) {
      sprintf(exception,"Exception (%i):\nepc1=0x%08x epc2=0x%08x epc3=0x%08x excvaddr=0x%08x depc=0x%08x\n",
@@ -72,7 +72,6 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   strcpy(buf,result);
 
   eeprom_erase_all();
-  EEPROM.commit();
   eeprom_write_string(0, buf);
   EEPROM.commit();
 } 

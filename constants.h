@@ -8,7 +8,7 @@ const int httpsPort = 443;
 const int EEPROM_MIN_ADDR = 0;
 const int EEPROM_MAX_ADDR = 4096;
 char buf[EEPROM_MAX_ADDR];
-char buf2[1000];
+//char buf2[1000];
 String stack;
 
 String version;
