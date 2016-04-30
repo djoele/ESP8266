@@ -90,7 +90,7 @@ void setup() {
     if(!server.authenticate(www_username, www_password))
       return server.requestAuthentication();
     server.send(200, "text/plain", "test");
-    //uploadStack();
+    uploadStack();
   });
   server.on("/reset", [](){
     if(!server.authenticate(www_username, www_password))
