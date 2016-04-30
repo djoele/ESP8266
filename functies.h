@@ -134,6 +134,8 @@ void uploadStack(){
   const char * stackkie = stack.c_str();
   char *ret;
   ret = strstr(stackkie, find2);
+
+  ret = "";
   if (ret==NULL){
     ret = strstr(stackkie, find);
   }

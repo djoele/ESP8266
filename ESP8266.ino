@@ -29,7 +29,7 @@ void setup() {
   EEPROM.begin(EEPROM_MAX_ADDR);
   SPIFFS.begin();
   
-  stack = loadStack();
+  //stack = loadStack();
   
   version = readFile("/md5.txt");
   strcpy(md5value, version.c_str());
@@ -90,7 +90,7 @@ void setup() {
     if(!server.authenticate(www_username, www_password))
       return server.requestAuthentication();
     server.send(200, "text/plain", "test");
-    uploadStack();
+    //uploadStack();
   });
   server.on("/reset", [](){
     if(!server.authenticate(www_username, www_password))
