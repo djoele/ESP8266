@@ -29,7 +29,7 @@ void setup() {
   EEPROM.begin(EEPROM_MAX_ADDR);
   SPIFFS.begin();
   
-  //stack = loadStack();
+  stack = loadStack();
   
   version = readFile("/md5.txt");
   strcpy(md5value, version.c_str());
@@ -143,7 +143,7 @@ void loop() {
     huidigverbruik = floor(3600 / tijdsduur);
     #ifdef DEBUG
     serverClient.println(String("[PULS] Energiepuls: ") + huidigverbruik);
-    #endif
+    #endif+
   }
   if (gaspuls == 1){
     gaspuls = 0;

@@ -1,6 +1,6 @@
-String getStack(uint32_t starter, uint32_t ender, uint32_t offset){
+String getStack(uint32_t starter, uint32_t ender){
   char stack_self[1200] = "";
-  char stack_self2[46];
+  char stack_self2[78];
   const char stack_begin[15] = "\n>>>stack>>>\n";
   const char stack_end[13] = "<<<stack<<<\n";
   strcat(stack_self, stack_begin);
@@ -58,7 +58,7 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
       stack_end2 = 0x3fffffb0;
   }
 
-  sprintf(spi, "sp: %08x end: %08x offset: %04x\n", stack-offset, stack_end2, offset);
+  sprintf(spi, "sp: %08x end: %08x offset: %04x\n", stack, stack_end2, offset);
 
   if (rst_info->reason == REASON_EXCEPTION_RST) {
     strcat(result, exception);
@@ -66,9 +66,8 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   strcat(result, cont);
   strcat(result, nctx);
   strcat(result, spi);
-
-  strcpy(buf2, getStack(stack, stack_end2, offset).c_str());
-  strcat(result, buf2);
+  //strcpy(buf2, getStack(stack+offset, stack_end2).c_str());
+  //strcat(result, buf2);
   strcpy(buf,result);
 
   eeprom_erase_all();
