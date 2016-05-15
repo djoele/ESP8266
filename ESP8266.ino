@@ -28,8 +28,11 @@ void setup() {
   
   EEPROM.begin(EEPROM_MAX_ADDR);
   SPIFFS.begin();
-  
+
   stack = loadStack();
+  #ifdef DEBUG
+  Serial.println(String("[STACK] Gelezen stack uit eeprom: ") + stack);
+  #endif
   
   version = readFile("/md5.txt");
   strcpy(md5value, version.c_str());
@@ -86,19 +89,23 @@ void setup() {
     server.send(200, "text/plain", "Login Succes, updating start..");
     doUpdate();
   });
-  server.on("/test", [](){
-    if(!server.authenticate(www_username, www_password))
-      return server.requestAuthentication();
-    server.send(200, "text/plain", "test");
-    uploadStack();
-  });
   server.on("/reset", [](){
     if(!server.authenticate(www_username, www_password))
       return server.requestAuthentication();
     server.send(200, "text/plain", "ESP8266 gaat resetten..");
     ESP.reset();
   });
+  server.on("/test", [](){
+    if(!server.authenticate(www_username, www_password))
+      return server.requestAuthentication();
+    server.send(200, "text/plain", "uitlezen stack");  
+    uint32_t a = '3fff2ff0';
+    uint32_t b = '3fff3470';
+    getStack(a, b);
+    serverClient.println(String("[STACK] buf2: ") + buf2);
+  });
   server.on("/update_sha", HTTP_POST, [](){
+    delay(1000000);
     if(!server.authenticate(www_username, www_password))
       return server.requestAuthentication();
     server.send(200, "text/plain", "Login Succes, updating sha..");    
@@ -113,19 +120,12 @@ void setup() {
     strcpy(shavalue, sha.c_str());
     #ifdef DEBUG
     serverClient.println(String("[SHA] Gelezen sha uit file na update: ") + shavalue);
-    serverClient.println(F("[SHA]Nu herstart..."));
     #endif
     ESP.reset();
   });
   server.begin();
 
-  #ifdef DEBUG
-  Serial.println(F("[STACK] Start uploading stack..."));
-  #endif
   uploadStack();
-  #ifdef DEBUG
-  Serial.println(F("[STACK] Klaar uploading stack..."));
-  #endif
   uploadValueToDomoticz(ID5, updateCounter, type1, 100, -1);
 }
 
@@ -143,7 +143,7 @@ void loop() {
     huidigverbruik = floor(3600 / tijdsduur);
     #ifdef DEBUG
     serverClient.println(String("[PULS] Energiepuls: ") + huidigverbruik);
-    #endif+
+    #endif
   }
   if (gaspuls == 1){
     gaspuls = 0;
@@ -159,7 +159,7 @@ void loop() {
     #ifdef DEBUG
     serverClient.println(String("[PULS] Tijdsduur tot vorige waterpuls: ") + tijdsduur2);
     #endif
-    if (tijdsduur2 > 3) {
+    if (tijdsduur2 > 2) {
       counter1++;
       #ifdef DEBUG
       serverClient.println(String("[PULS] Waterpuls gedetecteerd: ") + counter1);

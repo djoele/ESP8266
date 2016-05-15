@@ -1,22 +1,23 @@
-String getStack(uint32_t starter, uint32_t ender){
+void getStack(uint32_t starter, uint32_t ender){
   char stack_self[1200] = "";
-  char stack_self2[78];
+  char stack_self2[46];
   const char stack_begin[15] = "\n>>>stack>>>\n";
   const char stack_end[13] = "<<<stack<<<\n";
   strcat(stack_self, stack_begin);
   
   for (uint32_t pos = starter; pos < ender; pos += 0x10) {
-      uint32_t* values = (uint32_t*)(pos);
-
-      // rough indicator: stack frames usually have SP saved as the second word
-      bool looksLikeStackFrame = (values[2] == pos + 0x10);
-      sprintf(stack_self2, "%08x:  %08x %08x %08x %08x %c\n", pos, values[0], values[1], values[2], values[3], (looksLikeStackFrame)?'<':' ');
+       yield();
+      //uint32_t* values = (uint32_t*)(pos);
+      //rough indicator: stack frames usually have SP saved as the second worde
+      //bool looksLikeStackFrame = (values[2] == pos + 0x10);
+      //sprintf(stack_self2, "%08x:  %08x %08x %08x %08x %c\n", pos, values[0], values[1], values[2], values[3], (looksLikeStackFrame)?'<':' ');
+      sprintf(stack_self2, "Pos: %08x\n", pos);
       strcat(stack_self, stack_self2);
+       yield();
   } 
   strcat(stack_self, stack_end);
-  String res;
-  res = stack_self;
-  return res;
+  strcpy(buf2, stack_self);
+  //return res;
 }
 
 extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack, uint32_t stack_end ){    
@@ -27,8 +28,6 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   char cont[14];
   char nctx[14];
   char spi[50];
-  char buf[EEPROM_MAX_ADDR];
-  char buf2[1200];
   
   if (rst_info->reason == REASON_EXCEPTION_RST) {
      sprintf(exception,"Exception (%i):\nepc1=0x%08x epc2=0x%08x epc3=0x%08x excvaddr=0x%08x depc=0x%08x\n",
@@ -37,7 +36,7 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
     
   uint32_t cont_stack_start = (uint32_t) &(g_cont.stack);
   uint32_t cont_stack_end = (uint32_t) g_cont.stack_end;
-  uint32_t stack_end2 = 0;
+  uint32_t stack_end2 = stack_end;
 
   uint32_t offset = 0;
   if (rst_info->reason == REASON_SOFT_WDT_RST) {
@@ -57,7 +56,6 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
       sprintf(nctx, "\nctx: sys \n");
       stack_end2 = 0x3fffffb0;
   }
-
   sprintf(spi, "sp: %08x end: %08x offset: %04x\n", stack, stack_end2, offset);
 
   if (rst_info->reason == REASON_EXCEPTION_RST) {
@@ -66,13 +64,12 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   strcat(result, cont);
   strcat(result, nctx);
   strcat(result, spi);
-  //strcpy(buf2, getStack(stack+offset, stack_end2).c_str());
-  //strcat(result, buf2);
+  //strcpy(buf2, getStack(stack, stack_end2).c_str());
+  getStack(stack, stack_end2);
+  strcat(result, buf2);
   strcpy(buf,result);
 
   eeprom_erase_all();
   eeprom_write_string(0, buf);
   EEPROM.commit();
 } 
-
-

@@ -1,12 +1,12 @@
-void pinupEnergie() {
+void ICACHE_RAM_ATTR pinupEnergie() {
   energiepuls = 1;
 }
 
-void pinupGas() {
+void ICACHE_RAM_ATTR pinupGas() {
   gaspuls = 1;
 }
 
-void pulsetaskwater() {
+void ICACHE_RAM_ATTR pulsetaskwater() {
   waardenu = digitalRead(pinWater);
   if (waardenu > waarde || waardenu < waarde) {
     if (waardenu == HIGH) {

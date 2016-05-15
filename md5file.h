@@ -21,13 +21,6 @@ void saveValues() {
   }
   values.println(String("") + counter + " " + counter1 + " " + counter2); 
   values.close();
-
-  uint32_t a = '3ffffd80';
-    uint32_t b = '3fffffb0';
-    uint32_t offset = 0;
-    offset = '01a0';
-    String stack = getStack(a + offset, b);
-    Serial.println(String("[PULS] Energiepuls: ") + stack);
 }
 
 void saveSHA(String s) {

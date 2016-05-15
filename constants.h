@@ -8,7 +8,7 @@ const int httpsPort = 443;
 const int EEPROM_MIN_ADDR = 0;
 const int EEPROM_MAX_ADDR = 4096;
 char buf[EEPROM_MAX_ADDR];
-//char buf2[1000];
+char buf2[1200];
 String stack;
 
 String version;
@@ -16,7 +16,6 @@ char md5value[32] = "empty";
 String sha;
 char shavalue[60] = "";
 const char * fingerprint;
-//= "25:20:A9:23:D7:21:A4:1D:D2:A2:E1:E4:7E:56:0C:BB:FA:58:0E E0";
 
 const char* updateurl = "https://framboos-domotica.tk:443/update_esp8266";
 const char* ssid = "VGV7519B5207C";
@@ -74,7 +73,6 @@ time_t triggernu = now();
 time_t tijdsduur2 = 0;
 
 unsigned long startTimeWifi = millis();
-
 #ifdef DEBUG
 WiFiServer telnetServer(23);
 WiFiClient serverClient;

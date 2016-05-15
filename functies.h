@@ -121,32 +121,7 @@ void uploadResetinfoToDomoticz(int id, const char* updateString2, const char* ty
 }
 
 void uploadStack(){
-  char *rinfo;
-  String reset;
-  reset = ESP.getResetInfo();
-  rinfo = &reset[0];
-  char rr[1000];
- 
-  eeprom_read_string(0, buf, EEPROM_MAX_ADDR);
-  String stack = urlencode(buf);
-  const char find[4] = "ctx";
-  const char find2[10] = "Exception";
-  const char * stackkie = stack.c_str();
-  char *ret;
-  ret = strstr(stackkie, find2);
-
-  ret = "";
-  if (ret==NULL){
-    ret = strstr(stackkie, find);
-  }
-  strcpy(rr, rinfo);
-  strcat(rr, (const char *)ret);
-
-  String bla = urlencode(rr);
-  #ifdef DEBUG
-  Serial.println(String("[STACK] ") + bla);
-   #endif
-  uploadResetinfoToDomoticz(ID3, updateElectricityOrText, type3, bla, -1);
+  uploadResetinfoToDomoticz(ID3, updateElectricityOrText, type3, stack, -1);
 }
 
 void uploadValueToDomoticz(int id, const char* updateString2, const char* type, int value, int value2) {
@@ -193,6 +168,9 @@ String loadStack(){
 
   eeprom_read_string(0, buf, EEPROM_MAX_ADDR);
   String stack = urlencode(buf);
+  #ifdef DEBUG
+  Serial.println(String("[STACK] Stack gelezen: ") + stack);
+  #endif
   const char find[4] = "ctx";
   const char find2[10] = "Exception";
   const char * stackkie = stack.c_str();
@@ -203,12 +181,17 @@ String loadStack(){
   }
   
   strcpy(rr, rinfo);
-  strcat(rr, (const char *)ret);
-
+  //Deze eruithalen wanneer crash optreedt meteen bij opstarten
+  if (ret != NULL){
+    strcat(rr, (const char *)ret);
+  }
   String bla = urlencode(rr);
   #ifdef DEBUG
-  Serial.println(String("[STACK] Stack gelezen:") + bla);
+  Serial.println(String("[STACK] Stack gelezen: ") + stack);
   #endif
+
+  eeprom_erase_all();
+  EEPROM.commit();
   return bla;
 }
 
