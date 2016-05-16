@@ -4,23 +4,28 @@ void getStack(uint32_t starter, uint32_t ender){
   const char stack_begin[15] = "\n>>>stack>>>\n";
   const char stack_end[13] = "<<<stack<<<\n";
   strcat(stack_self, stack_begin);
+
+  ets_printf("%08x\n", starter);
+  ets_printf("%08x\n", ender);
   
   for (uint32_t pos = starter; pos < ender; pos += 0x10) {
-       yield();
-      //uint32_t* values = (uint32_t*)(pos);
+      uint32_t* values = (uint32_t*)(pos);
       //rough indicator: stack frames usually have SP saved as the second worde
-      //bool looksLikeStackFrame = (values[2] == pos + 0x10);
-      //sprintf(stack_self2, "%08x:  %08x %08x %08x %08x %c\n", pos, values[0], values[1], values[2], values[3], (looksLikeStackFrame)?'<':' ');
-      sprintf(stack_self2, "Pos: %08x\n", pos);
+      bool looksLikeStackFrame = (values[2] == pos + 0x10);
+      sprintf(stack_self2, "%08x:  %08x %08x %08x %08x %c\n", pos, values[0], values[1], values[2], values[3], (looksLikeStackFrame)?'<':' ');
+      ets_printf("%08x:  %08x %08x %08x %08x %c\n",
+            pos, values[0], values[1], values[2], values[3], (looksLikeStackFrame)?'<':' ');
       strcat(stack_self, stack_self2);
-       yield();
+      ESP.wdtFeed();
   } 
   strcat(stack_self, stack_end);
   strcpy(buf2, stack_self);
-  //return res;
 }
 
-extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack, uint32_t stack_end ){    
+extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack, uint32_t stack_end ){  
+  ets_printf("Custom stack begin");  
+  ets_printf("stack begin" + stack);  
+  ets_printf("stack begin" + stack_end);  
   register uint32_t sp asm("a1");
   cont_t g_cont __attribute__ ((aligned (16)));
   char result[2000];
@@ -64,12 +69,13 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   strcat(result, cont);
   strcat(result, nctx);
   strcat(result, spi);
-  //strcpy(buf2, getStack(stack, stack_end2).c_str());
-  getStack(stack, stack_end2);
+  getStack(stack + offset, stack_end2);
   strcat(result, buf2);
   strcpy(buf,result);
 
-  eeprom_erase_all();
-  eeprom_write_string(0, buf);
-  EEPROM.commit();
+  //eeprom_erase_all();
+  //eeprom_write_string(0, buf);
+  //EEPROM.commit();
+  //Serial.println(buf);
+  ets_printf("Custom stack einde");  
 } 

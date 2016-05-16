@@ -1,5 +1,7 @@
 #define DEBUG
 
+#include "D:\Tools\Arduino\hardware\esp8266com\esp8266\tools\xtensa-lx106-elf\xtensa-lx106-elf\include\stdint.h"
+#include "D:\Tools\Arduino\hardware\esp8266com\esp8266\tools\xtensa-lx106-elf\lib\gcc\xtensa-lx106-elf\4.8.2\include\stddef.h"
 #include <EEPROM.h>
 #include <FS.h>
 #include <ESP8266WiFi.h>
@@ -98,14 +100,17 @@ void setup() {
   server.on("/test", [](){
     if(!server.authenticate(www_username, www_password))
       return server.requestAuthentication();
-    server.send(200, "text/plain", "uitlezen stack");  
-    uint32_t a = '3fff2ff0';
-    uint32_t b = '3fff3470';
+    server.send(200, "text/plain", "uitlezen stack gestart");
+    uint32_t offset = '01a0';  
+    unsigned int a = '3fff35f0';
+    uint32_t b = '3fff3480';
+    //Serial.println(String("[STACK] buf2: " + a + ", " + b));
     getStack(a, b);
-    serverClient.println(String("[STACK] buf2: ") + buf2);
+    //char bla[1200];
+    //strcpy(bla,buf2);
+    //Serial.println(String("[STACK] buf2: ") + bla);
   });
   server.on("/update_sha", HTTP_POST, [](){
-    delay(1000000);
     if(!server.authenticate(www_username, www_password))
       return server.requestAuthentication();
     server.send(200, "text/plain", "Login Succes, updating sha..");    
