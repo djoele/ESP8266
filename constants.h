@@ -18,6 +18,7 @@ char shavalue[60] = "";
 const char * fingerprint;
 
 const char* updateurl = "https://framboos-domotica.tk:443/update_esp8266";
+const char* trigger_stack = "https://framboos-domotica.tk:443/trigger_stack";
 const char* ssid = "VGV7519B5207C";
 const char* password = "Wachtwoord";
 const char* www_username = "djoele";
@@ -78,3 +79,5 @@ WiFiServer telnetServer(23);
 WiFiClient serverClient;
 #endif
 ESP8266WebServer server(80);
+IPAddress ip;
+String ipadres;

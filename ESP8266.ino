@@ -1,7 +1,5 @@
 #define DEBUG
 
-#include "D:\Tools\Arduino\hardware\esp8266com\esp8266\tools\xtensa-lx106-elf\xtensa-lx106-elf\include\stdint.h"
-#include "D:\Tools\Arduino\hardware\esp8266com\esp8266\tools\xtensa-lx106-elf\lib\gcc\xtensa-lx106-elf\4.8.2\include\stddef.h"
 #include <EEPROM.h>
 #include <FS.h>
 #include <ESP8266WiFi.h>
@@ -97,18 +95,20 @@ void setup() {
     server.send(200, "text/plain", "ESP8266 gaat resetten..");
     ESP.reset();
   });
-  server.on("/test", [](){
+  server.on("/crash", [](){
     if(!server.authenticate(www_username, www_password))
       return server.requestAuthentication();
-    server.send(200, "text/plain", "uitlezen stack gestart");
-    uint32_t offset = '01a0';  
-    unsigned int a = '3fff35f0';
-    uint32_t b = '3fff3480';
-    //Serial.println(String("[STACK] buf2: " + a + ", " + b));
-    getStack(a, b);
-    //char bla[1200];
-    //strcpy(bla,buf2);
-    //Serial.println(String("[STACK] buf2: ") + bla);
+    server.send(200, "text/plain", "ESP8266 gaat crashen..");
+    char linea[]="0x123456",**ap;
+    int num;
+    num=strtol(linea,ap,0);
+    printf("%d\n%s",num,*ap);
+    int k;
+  });
+  server.on("/stack", [](){
+    if(!server.authenticate(www_username, www_password))
+      return server.requestAuthentication();
+    server.send(200, "text/plain", stack);
   });
   server.on("/update_sha", HTTP_POST, [](){
     if(!server.authenticate(www_username, www_password))
@@ -130,7 +130,7 @@ void setup() {
   });
   server.begin();
 
-  uploadStack();
+  triggerStack();
   uploadValueToDomoticz(ID5, updateCounter, type1, 100, -1);
 }
 

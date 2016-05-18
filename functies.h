@@ -32,6 +32,14 @@ String urlencode(String str)
     
 }
 
+String DisplayAddress(IPAddress address)
+{
+ return String(address[0]) + "." + 
+        String(address[1]) + "." + 
+        String(address[2]) + "." + 
+        String(address[3]);
+}
+
 void connectWifi() {
   #ifdef DEBUG
   Serial.println(String("[WIFI] ssid: ") + ssid);
@@ -48,6 +56,10 @@ void connectWifi() {
     delay(1);
     ESP.wdtFeed();
   }
+  Serial.print(String("[WIFI] IP: "));
+  Serial.println(WiFi.localIP());
+  ip = WiFi.localIP();
+  ipadres = DisplayAddress(ip);
 }
 
 void WiFiEvent(WiFiEvent_t event) {
@@ -65,12 +77,13 @@ void callURL2(String url, String host, const int port) {
   HTTPClient * http = new HTTPClient();
   http->begin(host, port, url, fingerprint);
   http->setAuthorization(www_username,www_password);
+  http->addHeader("X-ESP8266-IP", ipadres);
+
   int httpCode = http->GET();
-  if(httpCode > 0) {
-    #ifdef DEBUG    
-    serverClient.println((String("[HTTP] url: ") + url));
-    #endif
-  }
+  #ifdef DEBUG    
+    serverClient.println((String("[HTTP] url: ") + url + ", return code: " + httpCode));
+    Serial.println((String("[HTTP] url: ") + url + ", return code: " + httpCode));
+  #endif
   http->end();
   http->~HTTPClient();
   delete http;
@@ -112,16 +125,8 @@ void determineStartValues() {
   #endif
 }
 
-void uploadResetinfoToDomoticz(int id, const char* updateString2, const char* type, String value, int value2) {
-  String url = String(updateString) + id + String(updateString2) + value;
-  if (type == "Huidig energieverbruik") {
-    url = String(updateString) + id + String(updateString2) + value + ";" + value2;
-  }
-  callURL2(url, host, httpsPort);
-}
-
-void uploadStack(){
-  uploadResetinfoToDomoticz(ID3, updateElectricityOrText, type3, stack, -1);
+void triggerStack(){
+  callURL2(trigger_stack, host, httpsPort);
 }
 
 void uploadValueToDomoticz(int id, const char* updateString2, const char* type, int value, int value2) {
@@ -164,13 +169,10 @@ String loadStack(){
   String reset;
   reset = ESP.getResetInfo();
   rinfo = &reset[0];
-  char rr[2000];
+  char rr[2500];
 
   eeprom_read_string(0, buf, EEPROM_MAX_ADDR);
   String stack = urlencode(buf);
-  #ifdef DEBUG
-  Serial.println(String("[STACK] Stack gelezen: ") + stack);
-  #endif
   const char find[4] = "ctx";
   const char find2[10] = "Exception";
   const char * stackkie = stack.c_str();
@@ -186,10 +188,6 @@ String loadStack(){
     strcat(rr, (const char *)ret);
   }
   String bla = urlencode(rr);
-  #ifdef DEBUG
-  Serial.println(String("[STACK] Stack gelezen: ") + bla);
-  #endif
-
   eeprom_erase_all();
   EEPROM.commit();
   return bla;
@@ -212,58 +210,3 @@ void handleTelnet(){
   delay(10);  // to avoid strange characters left in buffer
 }
 #endif
-
-void hexDump(char *desc, void *addr, int len) {
-    int i;
-    unsigned char buff[17];
-    unsigned char *pc = (unsigned char*)addr;
-
-    // Output description if given.
-    if (desc != NULL)
-        Serial.printf ("%s:\n", desc);
-
-    if (len == 0) {
-        Serial.printf("  ZERO LENGTH\n");
-        return;
-    }
-    if (len < 0) {
-        Serial.printf("  NEGATIVE LENGTH: %i\n",len);
-        return;
-    }
-
-    // Process every byte in the data.
-    for (i = 0; i < len; i++) {
-        // Multiple of 16 means new line (with line offset).
-
-        if ((i % 16) == 0) {
-            // Just don't print ASCII for the zeroth line.
-            if (i != 0)
-                Serial.printf ("  %s\n", buff);
-
-            // Output the offset.
-            Serial.printf ("  %04x ", i);
-        }
-
-        // Now the hex code for the specific character.
-        Serial.printf (" %02x", pc[i]);
-
-        // And store a printable ASCII character for later.
-        if ((pc[i] < 0x20) || (pc[i] > 0x7e))
-            buff[i % 16] = '.';
-        else
-            buff[i % 16] = pc[i];
-        buff[(i % 16) + 1] = '\0';
-    }
-
-    // Pad out last line if not exactly 16 characters.
-    while ((i % 16) != 0) {
-        Serial.printf ("   ");
-        i++;
-    }
-
-    // And print the final ASCII bit.
-    Serial.printf ("  %s\n", buff);
-}
-
-
-
