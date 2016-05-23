@@ -37,14 +37,14 @@ void setup() {
   version = readFile("/md5.txt");
   strcpy(md5value, version.c_str());
   #ifdef DEBUG
-  Serial.println(String("[MD5] Gelezen md5 uit file: ") + md5value);
+  Serial.println(String("[MD5] Gelezen md5: ") + md5value);
   #endif
 
   sha = readFile("/sha.txt");
   fingerprint = sha.c_str();
   strcpy(shavalue, sha.c_str());
   #ifdef DEBUG
-  Serial.println(String("[SHA] Gelezen sha uit file: ") + shavalue);
+  Serial.println(String("[SHA] Gelezen sha: ") + shavalue);
   #endif
   
   memset(unameenc,0,sizeof(unameenc));

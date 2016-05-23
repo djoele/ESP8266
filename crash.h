@@ -11,7 +11,7 @@ void getStack(uint32_t starter, uint32_t ender){
       bool looksLikeStackFrame = (values[2] == pos + 0x10);
       sprintf(stack_self2, "%08x:  %08x %08x %08x %08x %c\n", pos, values[0], values[1], values[2], values[3], (looksLikeStackFrame)?'<':' ');
       strcat(stack_self, stack_self2);
-      ESP.wdtFeed();
+      //ESP.wdtFeed();
   } 
   strcat(stack_self, stack_end);
   strcpy(buf2, stack_self);
@@ -21,7 +21,7 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   register uint32_t sp asm("a1");
   cont_t g_cont __attribute__ ((aligned (16)));
   char result[2000];
-  char exception[300];
+  char exception[200];
   char cont[14];
   char nctx[14];
   char spi[50];
@@ -45,7 +45,7 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   else if (rst_info->reason == REASON_WDT_RST) {
       offset = 0x10;
   }
-  if (sp > cont_stack_start && sp < cont_stack_end) {
+  if (stack > cont_stack_start && stack < cont_stack_end) {
       sprintf(nctx, "\nctx: cont \n");
       stack_end2 = cont_stack_end;
   }
@@ -53,7 +53,7 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
       sprintf(nctx, "\nctx: sys \n");
       stack_end2 = 0x3fffffb0;
   }
-  sprintf(spi, "sp: %08x end: %08x offset: %04x\n", stack, stack_end2, offset);
+  sprintf(spi, "sp: %08x end: %08x offset: %04x\n", stack, stack_end, offset);
 
   if (rst_info->reason == REASON_EXCEPTION_RST) {
     strcat(result, exception);
