@@ -1,20 +1,20 @@
 void getStack(uint32_t starter, uint32_t ender){
-  char stack_self[1200] = "";
+  char stack_self[1971];
+  char result[2000];
   char stack_self2[46];
-  const char stack_begin[15] = "\n>>>stack>>>\n";
-  const char stack_end[13] = "<<<stack<<<\n";
-  strcat(stack_self, stack_begin);
+  char stack_begin[15] = "\n>>>stack>>>\n";
+  char stack_end[13] = "<<<stack<<<\n";
   
   for (uint32_t pos = starter; pos < ender; pos += 0x10) {
       uint32_t* values = (uint32_t*)(pos);
-      //rough indicator: stack frames usually have SP saved as the second worde
+      //rough indicator: stack frames usually have SP saved as the second word
       bool looksLikeStackFrame = (values[2] == pos + 0x10);
       sprintf(stack_self2, "%08x:  %08x %08x %08x %08x %c\n", pos, values[0], values[1], values[2], values[3], (looksLikeStackFrame)?'<':' ');
-      strcat(stack_self, stack_self2);
-      //ESP.wdtFeed();
+      sprintf(stack_self + strlen(stack_self), "%s", stack_self2);
   } 
-  strcat(stack_self, stack_end);
-  strcpy(buf2, stack_self);
+  
+  sprintf(result, "%s %s %s", stack_begin, stack_self, stack_end);
+  strcpy(buf2, result);
 }
 
 extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack, uint32_t stack_end ){  
@@ -47,22 +47,22 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   }
   if (stack > cont_stack_start && stack < cont_stack_end) {
       sprintf(nctx, "\nctx: cont \n");
-      stack_end2 = cont_stack_end;
+      stack_end2 = stack_end;
   }
   else {
       sprintf(nctx, "\nctx: sys \n");
       stack_end2 = 0x3fffffb0;
   }
-  sprintf(spi, "sp: %08x end: %08x offset: %04x\n", stack, stack_end, offset);
+  sprintf(spi, "sp: %08x end: %08x offset: %04x\n", stack, stack_end2, offset);
 
-  if (rst_info->reason == REASON_EXCEPTION_RST) {
-    strcat(result, exception);
-  }
-  strcat(result, cont);
-  strcat(result, nctx);
-  strcat(result, spi);
   getStack(stack, stack_end);
-  strcat(result, buf2);
+  
+  if (rst_info->reason == REASON_EXCEPTION_RST) {
+    sprintf(result, "%s %s %s %s %s", exception, cont, nctx, spi, buf2);
+  }
+  else {
+    sprintf(result, "%s %s %s %s %s", cont, nctx, spi, buf2);
+  }
   strcpy(buf,result);
 
   eeprom_erase_all();

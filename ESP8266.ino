@@ -1,5 +1,4 @@
 #define DEBUG
-
 #include <EEPROM.h>
 #include <FS.h>
 #include <ESP8266WiFi.h>
@@ -22,8 +21,8 @@
 
 void setup() {
   #ifdef DEBUG
-  Serial.begin(115200);
-  Serial.setDebugOutput(true);
+    Serial.begin(115200);
+    Serial.setDebugOutput(true);
   #endif
   
   EEPROM.begin(EEPROM_MAX_ADDR);
@@ -31,20 +30,20 @@ void setup() {
 
   stack = loadStack();
   #ifdef DEBUG
-  Serial.println(String("[STACK] Gelezen stack uit eeprom: ") + stack);
+    Serial.println(String("[STACK] Gelezen stack uit eeprom: ") + stack);
   #endif
   
   version = readFile("/md5.txt");
   strcpy(md5value, version.c_str());
   #ifdef DEBUG
-  Serial.println(String("[MD5] Gelezen md5: ") + md5value);
+    Serial.println(String("[MD5] Gelezen md5: ") + md5value);
   #endif
 
   sha = readFile("/sha.txt");
   fingerprint = sha.c_str();
   strcpy(shavalue, sha.c_str());
   #ifdef DEBUG
-  Serial.println(String("[SHA] Gelezen sha: ") + shavalue);
+    Serial.println(String("[SHA] Gelezen sha: ") + shavalue);
   #endif
   
   memset(unameenc,0,sizeof(unameenc));
@@ -52,7 +51,7 @@ void setup() {
 
   connectWifi();
   #ifdef DEBUG
-  Serial.print(F("[WIFI] Verbonden met Wifi"));
+    Serial.print(F("[WIFI] Verbonden met Wifi."));
   #endif
   WiFi.onEvent(WiFiEvent);
   
@@ -79,8 +78,8 @@ void setup() {
   Alarm.timerRepeat(60, uploadHeap);
 
   #ifdef DEBUG
-  telnetServer.begin();
-  telnetServer.setNoDelay(true);
+    telnetServer.begin();
+    telnetServer.setNoDelay(true);
   #endif
 
   server.on("/update_esp8266", [](){
@@ -104,6 +103,14 @@ void setup() {
     num=strtol(linea,ap,0);
     printf("%d\n%s",num,*ap);
     int k;
+  });
+  server.on("/crash2", [](){
+    if(!server.authenticate(www_username, www_password))
+      return server.requestAuthentication();
+    server.send(200, "text/plain", "ESP8266 gaat crashen..");
+    while (true){
+      serverClient.println("Crashing...");
+    }
   });
   server.on("/stack", [](){
     if(!server.authenticate(www_username, www_password))
@@ -137,7 +144,7 @@ void setup() {
 void loop() { 
   server.handleClient();
   #ifdef DEBUG
-  handleTelnet();
+    handleTelnet();
   #endif
   if (energiepuls == 1){
     energiepuls = 0;
@@ -147,14 +154,14 @@ void loop() {
     begintijd = pulsetijd;
     huidigverbruik = floor(3600 / tijdsduur);
     #ifdef DEBUG
-    serverClient.println(String("[PULS] Energiepuls: ") + huidigverbruik);
+      serverClient.println(String("[PULS] Energiepuls: ") + huidigverbruik);
     #endif
   }
   if (gaspuls == 1){
     gaspuls = 0;
     counter2++;
     #ifdef DEBUG
-    serverClient.println(String("[PULS] Gaspuls: ") + counter2);
+      serverClient.println(String("[PULS] Gaspuls: ") + counter2);
     #endif
   }
   pulsetaskwater();
@@ -162,12 +169,12 @@ void loop() {
     triggernu = now();
     tijdsduur2 = triggernu - triggertijd;
     #ifdef DEBUG
-    serverClient.println(String("[PULS] Tijdsduur tot vorige waterpuls: ") + tijdsduur2);
+      serverClient.println(String("[PULS] Tijdsduur tot vorige waterpuls: ") + tijdsduur2);
     #endif
     if (tijdsduur2 > 2) {
       counter1++;
       #ifdef DEBUG
-      serverClient.println(String("[PULS] Waterpuls gedetecteerd: ") + counter1);
+        serverClient.println(String("[PULS] Waterpuls gedetecteerd: ") + counter1);
       #endif
     }  
     triggertijd = now();
