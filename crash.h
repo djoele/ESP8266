@@ -34,8 +34,8 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   uint32_t cont_stack_start = (uint32_t) &(g_cont.stack);
   uint32_t cont_stack_end = (uint32_t) g_cont.stack_end;
   uint32_t stack_end2 = stack_end;
-
   uint32_t offset = 0;
+  
   if (rst_info->reason == REASON_SOFT_WDT_RST) {
       offset = 0x1b0;
   }

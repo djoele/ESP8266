@@ -112,6 +112,15 @@ void setup() {
       serverClient.println("Crashing...");
     }
   });
+  server.on("/crash3", [](){
+    if(!server.authenticate(www_username, www_password))
+      return server.requestAuthentication();
+    server.send(200, "text/plain", "ESP8266 gaat crashen..");
+    ESP.wdtDisable();
+    while (true){
+      serverClient.println("Crashing...");
+    }
+  });
   server.on("/stack", [](){
     if(!server.authenticate(www_username, www_password))
       return server.requestAuthentication();
