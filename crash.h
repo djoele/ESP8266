@@ -47,13 +47,13 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   }
   if (stack > cont_stack_start && stack < cont_stack_end) {
       sprintf(nctx, "\nctx: cont \n");
-      stack_end2 = stack_end;
+      //stack_end2 = stack_end;
   }
   else {
       sprintf(nctx, "\nctx: sys \n");
-      stack_end2 = 0x3fffffb0;
+      //stack_end2 = 0x3fffffb0;
   }
-  sprintf(spi, "sp: %08x end: %08x offset: %04x\n", stack, stack_end2, offset);
+  sprintf(spi, "sp: %08x end: %08x offset: %04x\n", stack, stack_end, offset);
 
   getStack(stack, stack_end);
   
