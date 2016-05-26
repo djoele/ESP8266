@@ -97,7 +97,7 @@ void setup() {
   server.on("/crash", [](){
     if(!server.authenticate(www_username, www_password))
       return server.requestAuthentication();
-    server.send(200, "text/plain", "ESP8266 gaat crashen..");
+    server.send(200, "text/plain", "ESP8266 gaat crashen met EXCEPTION..");
     char linea[]="0x123456",**ap;
     int num;
     num=strtol(linea,ap,0);
@@ -107,7 +107,7 @@ void setup() {
   server.on("/crash2", [](){
     if(!server.authenticate(www_username, www_password))
       return server.requestAuthentication();
-    server.send(200, "text/plain", "ESP8266 gaat crashen..");
+    server.send(200, "text/plain", "ESP8266 gaat crashen met SOFT_WDT..");
     while (true){
       serverClient.println("Crashing...");
     }
@@ -115,7 +115,7 @@ void setup() {
   server.on("/crash3", [](){
     if(!server.authenticate(www_username, www_password))
       return server.requestAuthentication();
-    server.send(200, "text/plain", "ESP8266 gaat crashen..");
+    server.send(200, "text/plain", "ESP8266 gaat crashen met WDT..");
     ESP.wdtDisable();
     while (true){
       serverClient.println("Crashing...");
