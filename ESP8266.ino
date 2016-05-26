@@ -121,6 +121,26 @@ void setup() {
       serverClient.println("Crashing...");
     }
   });
+  server.on("/crash4", [](){
+    if(!server.authenticate(www_username, www_password))
+      return server.requestAuthentication();
+    server.send(200, "text/plain", "ESP8266 gaat crashen met EXCEPTION..");
+      int* i = NULL;
+      *i = 80;
+  });
+  server.on("/crash5", [](){
+    if(!server.authenticate(www_username, www_password))
+      return server.requestAuthentication();
+    server.send(200, "text/plain", "ESP8266 gaat crashen met EXCEPTION..");
+      char *svptr = NULL;
+      static char* str_input = NULL;
+      const char delim[] = " ";
+      char input[] = "bla";
+      size_t malloc_amount = (sizeof(char) * 0) & (~3);
+      str_input = (char *)malloc(malloc_amount);
+      memset(str_input, '\0', 0);
+      strcpy(str_input, input);  
+  });
   server.on("/stack", [](){
     if(!server.authenticate(www_username, www_password))
       return server.requestAuthentication();
