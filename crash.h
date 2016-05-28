@@ -1,36 +1,25 @@
 void getStack(uint32_t starter, uint32_t ender){
-  char stack_self[1971];
-  char result[2000];
-  char stack_self2[46];
-  char stack_begin[15] = "\n>>>stack>>>\n";
-  char stack_end[13] = "<<<stack<<<\n";
+  //char stack_self[2000];
+  char stackline[46];
   
   for (uint32_t pos = starter; pos < ender; pos += 0x10) {
       uint32_t* values = (uint32_t*)(pos);
       //rough indicator: stack frames usually have SP saved as the second word
       bool looksLikeStackFrame = (values[2] == pos + 0x10);
-      sprintf(stack_self2, "%08x:  %08x %08x %08x %08x %c\n", pos, values[0], values[1], values[2], values[3], (looksLikeStackFrame)?'<':' ');
-      sprintf(stack_self + strlen(stack_self), "%s", stack_self2);
+      sprintf(stackline, "%08x:  %08x %08x %08x %08x %c", pos, values[0], values[1], values[2], values[3], (looksLikeStackFrame)?'<':' ');
+      sprintf(buf2 + strlen(buf2), "%s", stackline);
   } 
-  
-  sprintf(result, "%s %s %s", stack_begin, stack_self, stack_end);
-  strcpy(buf2, result);
+  //strcpy(buf2, stack_self);
 }
 
 extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack, uint32_t stack_end ){  
   register uint32_t sp asm("a1");
   cont_t g_cont __attribute__ ((aligned (16)));
   char result[2000];
-  char exception[200];
   char cont[14];
   char nctx[14];
   char spi[50];
   
-  if (rst_info->reason == REASON_EXCEPTION_RST) {
-     sprintf(exception,"Exception (%i):\nepc1=0x%08x epc2=0x%08x epc3=0x%08x excvaddr=0x%08x depc=0x%08x\n",
-            rst_info->exccause, rst_info->epc1, rst_info->epc2, rst_info->epc3, rst_info->excvaddr, rst_info->depc);        
-  }
-    
   uint32_t cont_stack_start = (uint32_t) &(g_cont.stack);
   uint32_t cont_stack_end = (uint32_t) g_cont.stack_end;
   uint32_t stack_end2 = stack_end;
@@ -46,23 +35,14 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
       offset = 0x10;
   }
   if (stack > cont_stack_start && stack < cont_stack_end) {
-      sprintf(nctx, "\nctx: cont \n");
-      //stack_end2 = stack_end;
+      sprintf(nctx, "ctx: cont");
   }
   else {
-      sprintf(nctx, "\nctx: sys \n");
-      //stack_end2 = 0x3fffffb0;
+      sprintf(nctx, "ctx: sys");
   }
   sprintf(spi, "sp: %08x end: %08x offset: %04x\n", stack, stack_end, offset);
-
   getStack(stack, stack_end);
-  
-  if (rst_info->reason == REASON_EXCEPTION_RST) {
-    sprintf(result, "%s %s %s %s %s", exception, cont, nctx, spi, buf2);
-  }
-  else {
-    sprintf(result, "%s %s %s %s %s", cont, nctx, spi, buf2);
-  }
+  sprintf(result, "%s %s %s %s %s", cont, nctx, spi, buf2);
   strcpy(buf,result);
 
   eeprom_erase_all();
@@ -85,4 +65,3 @@ void crashme2(){
   memset(str_input, '\0', 0);
   strcpy(str_input, input);  
 }
-
