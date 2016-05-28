@@ -1,5 +1,4 @@
 void getStack(uint32_t starter, uint32_t ender){
-  //char stack_self[2000];
   char stackline[46];
   
   for (uint32_t pos = starter; pos < ender; pos += 0x10) {
@@ -9,16 +8,11 @@ void getStack(uint32_t starter, uint32_t ender){
       sprintf(stackline, "%08x:  %08x %08x %08x %08x %c", pos, values[0], values[1], values[2], values[3], (looksLikeStackFrame)?'<':' ');
       sprintf(buf2 + strlen(buf2), "%s", stackline);
   } 
-  //strcpy(buf2, stack_self);
 }
 
 extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack, uint32_t stack_end ){  
   register uint32_t sp asm("a1");
   cont_t g_cont __attribute__ ((aligned (16)));
-  char result[2000];
-  char cont[14];
-  char nctx[14];
-  char spi[50];
   
   uint32_t cont_stack_start = (uint32_t) &(g_cont.stack);
   uint32_t cont_stack_end = (uint32_t) g_cont.stack_end;
@@ -35,18 +29,16 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
       offset = 0x10;
   }
   if (stack > cont_stack_start && stack < cont_stack_end) {
-      sprintf(nctx, "ctx: cont");
+      sprintf(buf2 + strlen(buf2), "%s", "ctx: cont");
   }
   else {
-      sprintf(nctx, "ctx: sys");
+      sprintf(buf2 + strlen(buf2), "%s", "ctx: sys");
   }
-  sprintf(spi, "sp: %08x end: %08x offset: %04x\n", stack, stack_end, offset);
+  sprintf(buf2 + strlen(buf2), "sp: %08x end: %08x offset: %04x\n", stack, stack_end, offset);
   getStack(stack, stack_end);
-  sprintf(result, "%s %s %s %s %s", cont, nctx, spi, buf2);
-  strcpy(buf,result);
 
   eeprom_erase_all();
-  eeprom_write_string(0, buf);
+  eeprom_write_string(0, buf2);
   EEPROM.commit();
 } 
 
