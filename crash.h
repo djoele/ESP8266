@@ -1,9 +1,7 @@
 void getStack(uint32_t starter, uint32_t ender){
   char stackline[46];
-  
   for (uint32_t pos = starter; pos < ender; pos += 0x10) {
       uint32_t* values = (uint32_t*)(pos);
-      //rough indicator: stack frames usually have SP saved as the second word
       bool looksLikeStackFrame = (values[2] == pos + 0x10);
       sprintf(stackline, "%08x:  %08x %08x %08x %08x %c", pos, values[0], values[1], values[2], values[3], (looksLikeStackFrame)?'<':' ');
       sprintf(buf2 + strlen(buf2), "%s", stackline);
@@ -13,10 +11,8 @@ void getStack(uint32_t starter, uint32_t ender){
 extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack, uint32_t stack_end ){  
   register uint32_t sp asm("a1");
   cont_t g_cont __attribute__ ((aligned (16)));
-  
   uint32_t cont_stack_start = (uint32_t) &(g_cont.stack);
   uint32_t cont_stack_end = (uint32_t) g_cont.stack_end;
-  uint32_t stack_end2 = stack_end;
   uint32_t offset = 0;
   
   if (rst_info->reason == REASON_SOFT_WDT_RST) {
