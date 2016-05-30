@@ -94,6 +94,7 @@ void setup() {
     server.send(200, "text/plain", "ESP8266 gaat resetten..");
     ESP.reset();
   });
+  #ifdef DEBUG
   server.on("/crash", [](){
     if(!server.authenticate(www_username, www_password))
       return server.requestAuthentication();
@@ -133,6 +134,8 @@ void setup() {
     server.send(200, "text/plain", "ESP8266 gaat crashen met EXCEPTION..");
       crashme2();
   });
+  #endif
+  
   server.on("/stack", [](){
     if(!server.authenticate(www_username, www_password))
       return server.requestAuthentication();

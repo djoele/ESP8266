@@ -1,5 +1,10 @@
+//Meterkast ESP8266
+//Zie D:\data\djoele\Documents\ESP8266-1.png
+//pin 2: grijs = energie
+//pin 8: groen = gas
+//pin 9: blauw = water
 const int pinEnergie = 5;
-const int pinGas = 0;
+const int pinGas = 14;
 const int pinWater = 12;
 
 const String host = "framboos-domotica.tk";
