@@ -165,11 +165,13 @@ void uploadHeap() {
 }
 
 String loadStack(){
-  String stack;
+  String stack = "";
 
   eeprom_read_string(0, buf, EEPROM_MAX_ADDR);
-  stack = urlencode(buf);
-  
+  //stack zou moeten beginnen met ctx
+  if (buf[0]=='c'){
+    stack = urlencode(buf);
+  }
   eeprom_erase_all();
   EEPROM.commit();
   return stack;
