@@ -27,13 +27,6 @@ void setup() {
   
   EEPROM.begin(EEPROM_MAX_ADDR);
   SPIFFS.begin();
-
-  reset = loadResetInfo();
-  stack = loadStack();
-  #ifdef DEBUG
-    Serial.println(String("[RESET] Gelezen reset uit eeprom: ") + reset);
-    Serial.println(String("[STACK] Gelezen stack uit eeprom: ") + stack);
-  #endif
   
   version = readFile("/md5.txt");
   strcpy(md5value, version.c_str());
@@ -168,7 +161,12 @@ void setup() {
   });
   server.begin();
 
-  uploadValueToDomoticz(ID5, updateCounter, type1, 100, -1);
+  reset = loadResetInfo();
+  //stack = loadStack();
+  #ifdef DEBUG
+    Serial.println(String("[RESET] Gelezen reset uit eeprom: ") + reset);
+    //Serial.println(String("[STACK] Gelezen stack uit eeprom: ") + stack);
+  #endif
   triggerStack();
 }
 
