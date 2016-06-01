@@ -162,10 +162,10 @@ void setup() {
   server.begin();
 
   reset = loadResetInfo();
-  //stack = loadStack();
+  stack = loadStack();
   #ifdef DEBUG
     Serial.println(String("[RESET] Gelezen reset uit eeprom: ") + reset);
-    //Serial.println(String("[STACK] Gelezen stack uit eeprom: ") + stack);
+    Serial.println(String("[STACK] Gelezen stack uit eeprom: ") + stack);
   #endif
   triggerStack();
 }
