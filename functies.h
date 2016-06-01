@@ -165,32 +165,21 @@ void uploadHeap() {
 }
 
 String loadStack(){
-  char *rinfo;
-  String reset;
-  reset = ESP.getResetInfo();
-  rinfo = &reset[0];
-  char rr[2500];
+  String stack;
 
   eeprom_read_string(0, buf, EEPROM_MAX_ADDR);
-  String stack = urlencode(buf);
-  const char find[4] = "ctx";
-  const char find2[10] = "Exception";
-  const char * stackkie = stack.c_str();
-  char *ret;
-  ret = strstr(stackkie, find2);
-  if (ret==NULL){
-    ret = strstr(stackkie, find);
-  }
+  stack = urlencode(buf);
   
-  strcpy(rr, rinfo);
-  //Deze eruithalen wanneer crash optreedt meteen bij opstarten
-  if (ret != NULL){
-    strcat(rr, (const char *)ret);
-  }
-  String bla = urlencode(rr);
   eeprom_erase_all();
   EEPROM.commit();
-  return bla;
+  return stack;
+}
+
+String loadResetInfo(){
+  String reset;
+
+  reset = ESP.getResetInfo();
+  return urlencode(reset);
 }
 
 #ifdef DEBUG

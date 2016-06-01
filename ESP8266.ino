@@ -28,8 +28,10 @@ void setup() {
   EEPROM.begin(EEPROM_MAX_ADDR);
   SPIFFS.begin();
 
+  reset = loadResetInfo();
   stack = loadStack();
   #ifdef DEBUG
+    Serial.println(String("[RESET] Gelezen reset uit eeprom: ") + reset);
     Serial.println(String("[STACK] Gelezen stack uit eeprom: ") + stack);
   #endif
   
@@ -141,6 +143,11 @@ void setup() {
       return server.requestAuthentication();
     server.send(200, "text/plain", stack);
   });
+  server.on("/resetinfo", [](){
+    if(!server.authenticate(www_username, www_password))
+      return server.requestAuthentication();
+    server.send(200, "text/plain", reset);
+  });
   server.on("/update_sha", HTTP_POST, [](){
     if(!server.authenticate(www_username, www_password))
       return server.requestAuthentication();
@@ -161,8 +168,8 @@ void setup() {
   });
   server.begin();
 
-  triggerStack();
   uploadValueToDomoticz(ID5, updateCounter, type1, 100, -1);
+  triggerStack();
 }
 
 void loop() { 

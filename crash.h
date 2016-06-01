@@ -25,10 +25,10 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
       offset = 0x10;
   }
   if (stack > cont_stack_start && stack < cont_stack_end) {
-      sprintf(buf2 + strlen(buf2), "%s", "ctx: cont");
+      sprintf(buf2 + strlen(buf2), "%s", "ctx: cont ");
   }
   else {
-      sprintf(buf2 + strlen(buf2), "%s", "ctx: sys");
+      sprintf(buf2 + strlen(buf2), "%s", "ctx: sys ");
   }
   sprintf(buf2 + strlen(buf2), "sp: %08x end: %08x offset: %04x\n", stack, stack_end, offset);
   getStack(stack, stack_end);

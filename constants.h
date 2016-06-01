@@ -15,6 +15,7 @@ const int EEPROM_MAX_ADDR = 4096;
 char buf[EEPROM_MAX_ADDR];
 char buf2[2000];
 String stack;
+String reset;
 
 String version;
 char md5value[32] = "empty";
@@ -55,10 +56,6 @@ int counter2 = 0;
 const int ID2 = 13;
 const char* type2 = "Gas";
 volatile int gaspuls = 0;
-
-//Error
-const int ID3 = 25;
-const char* type3 = "Error";
 
 //Heap
 const int ID5 = 28;
