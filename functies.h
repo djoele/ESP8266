@@ -1,37 +1,3 @@
-String urlencode(String str)
-{
-    String encodedString="";
-    char c;
-    char code0;
-    char code1;
-    char code2;
-    for (int i =0; i < str.length(); i++){
-      c=str.charAt(i);
-      if (c == ' '){
-        encodedString+= '+';
-      } else if (isalnum(c)){
-        encodedString+=c;
-      } else{
-        code1=(c & 0xf)+'0';
-        if ((c & 0xf) >9){
-            code1=(c & 0xf) - 10 + 'A';
-        }
-        c=(c>>4)&0xf;
-        code0=c+'0';
-        if (c > 9){
-            code0=c - 10 + 'A';
-        }
-        code2='\0';
-        encodedString+='%';
-        encodedString+=code0;
-        encodedString+=code1;
-      }
-      yield();
-    }
-    return encodedString;
-    
-}
-
 String DisplayAddress(IPAddress address)
 {
  return String(address[0]) + "." + 
@@ -166,14 +132,14 @@ void uploadHeap() {
 
 String loadStack(){
   String stack = "";
-
   eeprom_read_string(0, buf, EEPROM_MAX_ADDR);
-  //stack zou moeten beginnen met ctx
-  if (buf[0]=='c'){
-    stack = urlencode(buf);
-  }
   eeprom_erase_all();
   EEPROM.commit();
+
+   //stack should start with ctx, otherwise there is no stack
+  if (buf[0]=='c'){
+    stack = String(buf);
+  }
   return stack;
 }
 
@@ -181,7 +147,7 @@ String loadResetInfo(){
   String reset;
 
   reset = ESP.getResetInfo();
-  return urlencode(reset);
+  return reset;
 }
 
 #ifdef DEBUG
