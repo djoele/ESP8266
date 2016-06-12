@@ -1,4 +1,4 @@
-//#define DEBUG
+#define DEBUG
 #include <EEPROM.h>
 #include <FS.h>
 #include <ESP8266WiFi.h>
@@ -61,6 +61,7 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(pinEnergie), pinupEnergie, FALLING);
 
   pinMode(pinWater, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(pinWater), telFlips, FALLING);
   waarde = digitalRead(pinWater);
   waardenu = waarde;
   triggertijd = now();
@@ -199,7 +200,15 @@ void loop() {
     tijdsduur2 = triggernu - triggertijd;
     #ifdef DEBUG
       serverClient.println(String("[PULS] Tijdsduur tot vorige waterpuls: ") + tijdsduur2);
+      serverClient.println(String("[FLIPS] Aantal flips sinds vorige waterpuls: ") + flips);
+      serverClient.println(String("[FLIPS] Aantal flips per seconde sinds vorige waterpuls: ") + flips/tijdsduur2);
     #endif
+    String flipje = String("/log_flips?flips=") + flips;
+    callURL2(flipje, host, httpsPort);
+    if (tijdsduur2 < 60) {
+      flipje = String("/log_flips?flips=") + flips/tijdsduur2;
+      callURL2(flipje, host, httpsPort);
+    }
     if (tijdsduur2 > 2) {
       counter1++;
       #ifdef DEBUG
@@ -208,6 +217,7 @@ void loop() {
     }  
     triggertijd = now();
     waterpuls = 0;
+    flips = 0;
   }
   ESP.wdtFeed();
   Alarm.delay(1000);

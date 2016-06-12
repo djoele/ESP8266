@@ -47,6 +47,7 @@ const char* type4 = "Huidig energieverbruik";
 
 //Water
 volatile int counter1 = 0;
+volatile int flips = 0;
 const int ID1 = 12;
 const char* type1 = "Water";
 int waterpuls = 0;
