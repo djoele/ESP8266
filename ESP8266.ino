@@ -1,4 +1,4 @@
-#define DEBUG
+//#define DEBUG
 #include <EEPROM.h>
 #include <FS.h>
 #include <ESP8266WiFi.h>
@@ -206,7 +206,7 @@ void loop() {
     String flipje = String("/log_flips?flips=") + flips;
     callURL2(flipje, host, httpsPort);
     
-    flipje = String("/log_flips_secs?flips=") + flips/tijdsduur2;
+    flipje = String("/log_flips_secs?flips=") + flips/tijdsduur2 + "&secs=" + tijdsduur2;
     callURL2(flipje, host, httpsPort);
     
     if (tijdsduur2 > 2) {
