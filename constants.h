@@ -7,7 +7,7 @@ const int pinEnergie = 5;
 const int pinGas = 14;
 const int pinWater = 12;
 
-const char * host = "framboos-domotica.tk";
+const String host = "framboos-domotica.tk";
 const int httpsPort = 443;
 
 const int EEPROM_MIN_ADDR = 0;
