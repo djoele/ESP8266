@@ -28,17 +28,6 @@ void connectWifi() {
   ipadres = DisplayAddress(ip);
 }
 
-void WiFiEvent(WiFiEvent_t event) {
-  switch (event) {
-    case WIFI_EVENT_STAMODE_DHCP_TIMEOUT:
-      connectWifi();
-      break;
-    case WIFI_EVENT_STAMODE_DISCONNECTED:
-      connectWifi();
-      break;
-  }
-}
-
 void callURL2(String url, String host, const int port) {
   HTTPClient * http = new HTTPClient();
   http->begin(host, port, url, fingerprint);

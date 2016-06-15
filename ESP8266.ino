@@ -1,4 +1,4 @@
-//#define DEBUG
+#define DEBUG
 #include <EEPROM.h>
 #include <FS.h>
 #include <ESP8266WiFi.h>
@@ -44,11 +44,14 @@ void setup() {
   memset(unameenc,0,sizeof(unameenc));
   base64_encode(unameenc, uname, strlen(uname));
 
-  connectWifi();
+  connectWifi();    
+    
   #ifdef DEBUG
     Serial.print(F("[WIFI] Verbonden met Wifi."));
   #endif
-  WiFi.onEvent(WiFiEvent);
+  mDisconnectHandler = WiFi.onStationModeDisconnected([&](const WiFiEventStationModeDisconnected& evt){
+        connectWifi();
+   });  
   
   //FOR RESET eerst alleen saveValues, daarna die uit en dan weer determineStartValues
   //saveValues();

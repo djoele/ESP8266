@@ -10,7 +10,9 @@ void doUpdate(){
     #endif
     if(ret == HTTP_UPDATE_OK) {
       //Dit helpt tegen een vroegtijdige reboot
-      WiFi.removeEvent(WiFiEvent);
+      //WiFi.removeEvent(WiFiEvent);
+      delete &mDisconnectHandler;
+      
       ret = ESPhttpUpdate.update(updateurl, md5value, fingerprint);
      }
   }
