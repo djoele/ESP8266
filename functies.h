@@ -19,14 +19,18 @@ void connectWifi() {
     #ifdef DEBUG
     Serial.print(F("."));
     #endif
-    delay(1);
-    ESP.wdtFeed();
+    delay(50);
   }
   Serial.print(String("[WIFI] IP: "));
   Serial.println(WiFi.localIP());
   ip = WiFi.localIP();
   ipadres = DisplayAddress(ip);
 }
+
+void onDisconnected(const WiFiEventStationModeDisconnected& event)
+    {
+        connectWifi();
+    }
 
 void callURL2(String url, String host, const int port) {
   HTTPClient * http = new HTTPClient();

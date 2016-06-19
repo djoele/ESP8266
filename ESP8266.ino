@@ -49,9 +49,7 @@ void setup() {
   #ifdef DEBUG
     Serial.print(F("[WIFI] Verbonden met Wifi."));
   #endif
-  mDisconnectHandler = WiFi.onStationModeDisconnected([&](const WiFiEventStationModeDisconnected& evt){
-        connectWifi();
-   });  
+  mDisconnectHandler = WiFi.onStationModeDisconnected(&onDisconnected); 
   
   //FOR RESET eerst alleen saveValues, daarna die uit en dan weer determineStartValues
   //saveValues();
@@ -212,7 +210,7 @@ void loop() {
     flipje = String("/log_flips_secs?flips=") + flips/tijdsduur2 + "&secs=" + tijdsduur2;
     callURL2(flipje, host, httpsPort);
     
-    if (tijdsduur2 > 2) {
+    if (tijdsduur2 > 1) {
       counter1++;
       #ifdef DEBUG
         serverClient.println(String("[PULS] Waterpuls gedetecteerd: ") + counter1);
