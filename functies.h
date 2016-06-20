@@ -16,10 +16,8 @@ void connectWifi() {
   Serial.print(F("[WIFI] Verbinden met Wifi"));
   #endif
   while (WiFi.status() != WL_CONNECTED) {
-    #ifdef DEBUG
-    Serial.print(F("."));
-    #endif
-    delay(50);
+    delay(100);
+    ESP.wdtFeed();
   }
   Serial.print(String("[WIFI] IP: "));
   Serial.println(WiFi.localIP());

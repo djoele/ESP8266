@@ -132,7 +132,13 @@ void setup() {
       crashme2();
   });
   #endif
-  
+
+  server.on("/killwifi", [](){
+    if(!server.authenticate(www_username, www_password))
+      return server.requestAuthentication();
+    server.send(200, "text/plain", "ESP8266 gaat Wifi disconnetcen..");
+    WiFi.disconnect();
+  });
   server.on("/stack", [](){
     if(!server.authenticate(www_username, www_password))
       return server.requestAuthentication();
