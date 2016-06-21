@@ -16,18 +16,26 @@ void connectWifi() {
   Serial.print(F("[WIFI] Verbinden met Wifi"));
   #endif
   while (WiFi.status() != WL_CONNECTED) {
-    delay(100);
-    ESP.wdtFeed();
+    delay(1);
   }
   Serial.print(String("[WIFI] IP: "));
   Serial.println(WiFi.localIP());
   ip = WiFi.localIP();
   ipadres = DisplayAddress(ip);
+  disconnected = 0;
+}
+
+void reconnectWifi() {
+  #ifdef DEBUG
+  Serial.println(String("[WIFI] Reconnect Wifi getriggered"));
+  #endif
+  WiFi.begin(ssid, password);
 }
 
 void onDisconnected(const WiFiEventStationModeDisconnected& event)
     {
-        connectWifi();
+        disconnected = 1;
+        reconnectWifi();
     }
 
 void callURL2(String url, String host, const int port) {

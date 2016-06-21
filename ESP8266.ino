@@ -136,7 +136,7 @@ void setup() {
   server.on("/killwifi", [](){
     if(!server.authenticate(www_username, www_password))
       return server.requestAuthentication();
-    server.send(200, "text/plain", "ESP8266 gaat Wifi disconnetcen..");
+    server.send(200, "text/plain", "ESP8266 gaat Wifi disconnecten..");
     WiFi.disconnect();
   });
   server.on("/stack", [](){
@@ -179,6 +179,14 @@ void setup() {
 }
 
 void loop() { 
+  #ifdef DEBUG
+    if (disconnected == 1 && WiFi.status() == WL_CONNECTED){
+      Serial.print(String("[WIFI] IP: "));
+      Serial.println(WiFi.localIP());
+      disconnected = 0;
+    }
+  #endif
+   
   server.handleClient();
   #ifdef DEBUG
     handleTelnet();

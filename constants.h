@@ -86,3 +86,4 @@ IPAddress ip;
 String ipadres;
 
 WiFiEventHandler mDisconnectHandler;
+int disconnected = 1;
