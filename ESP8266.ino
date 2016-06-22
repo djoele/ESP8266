@@ -1,4 +1,4 @@
-//#define DEBUG
+#define DEBUG
 #include <EEPROM.h>
 #include <FS.h>
 #include <ESP8266WiFi.h>
