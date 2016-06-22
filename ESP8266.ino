@@ -1,4 +1,4 @@
-#define DEBUG
+//#define DEBUG
 #include <EEPROM.h>
 #include <FS.h>
 #include <ESP8266WiFi.h>
@@ -219,6 +219,5 @@ void loop() {
     waterpuls = 0;
     flips = 0;
   }
-  //ESP.wdtFeed();
   Alarm.delay(1000);
 }
