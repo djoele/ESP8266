@@ -10,7 +10,7 @@ void doUpdate(){
     #endif
     if(ret == HTTP_UPDATE_OK) {
       //Dit helpt tegen een vroegtijdige reboot?????
-      delete &mDisconnectHandler;
+      //delete &mDisconnectHandler;
       
       ret = ESPhttpUpdate.update(updateurl, md5value, fingerprint);
      }

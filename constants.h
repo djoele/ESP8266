@@ -84,6 +84,3 @@ WiFiClient serverClient;
 ESP8266WebServer server(80);
 IPAddress ip;
 String ipadres;
-
-WiFiEventHandler mDisconnectHandler;
-int disconnected = 1;

@@ -22,7 +22,7 @@ void connectWifi() {
   Serial.println(WiFi.localIP());
   ip = WiFi.localIP();
   ipadres = DisplayAddress(ip);
-  disconnected = 0;
+  //disconnected = 0;
 }
 
 void reconnectWifi() {
@@ -32,11 +32,11 @@ void reconnectWifi() {
   WiFi.begin(ssid, password);
 }
 
-void onDisconnected(const WiFiEventStationModeDisconnected& event)
-    {
-        disconnected = 1;
-        reconnectWifi();
-    }
+//void onDisconnected(const WiFiEventStationModeDisconnected& event)
+  //  {
+    //    disconnected = 1;
+    //    reconnectWifi();
+   // }
 
 void callURL2(String url, String host, const int port) {
   HTTPClient * http = new HTTPClient();
@@ -91,7 +91,7 @@ void determineStartValues() {
 }
 
 void triggerStack(){
-  callURL2(trigger_stack, host, httpsPort);
+    callURL2(trigger_stack, host, httpsPort);  
 }
 
 void uploadValueToDomoticz(int id, const char* updateString2, const char* type, int value, int value2) {

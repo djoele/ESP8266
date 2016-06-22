@@ -1,4 +1,4 @@
-#define DEBUG
+//#define DEBUG
 #include <EEPROM.h>
 #include <FS.h>
 #include <ESP8266WiFi.h>
@@ -49,8 +49,7 @@ void setup() {
   #ifdef DEBUG
     Serial.print(F("[WIFI] Verbonden met Wifi."));
   #endif
-  mDisconnectHandler = WiFi.onStationModeDisconnected(&onDisconnected); 
-  
+   
   //FOR RESET eerst alleen saveValues, daarna die uit en dan weer determineStartValues
   //saveValues();
   determineStartValues();
@@ -133,12 +132,6 @@ void setup() {
   });
   #endif
 
-  server.on("/killwifi", [](){
-    if(!server.authenticate(www_username, www_password))
-      return server.requestAuthentication();
-    server.send(200, "text/plain", "ESP8266 gaat Wifi disconnecten..");
-    WiFi.disconnect();
-  });
   server.on("/stack", [](){
     if(!server.authenticate(www_username, www_password))
       return server.requestAuthentication();
@@ -179,14 +172,6 @@ void setup() {
 }
 
 void loop() { 
-  #ifdef DEBUG
-    if (disconnected == 1 && WiFi.status() == WL_CONNECTED){
-      Serial.print(String("[WIFI] IP: "));
-      Serial.println(WiFi.localIP());
-      disconnected = 0;
-    }
-  #endif
-   
   server.handleClient();
   #ifdef DEBUG
     handleTelnet();
@@ -234,6 +219,6 @@ void loop() {
     waterpuls = 0;
     flips = 0;
   }
-  ESP.wdtFeed();
+  //ESP.wdtFeed();
   Alarm.delay(1000);
 }
