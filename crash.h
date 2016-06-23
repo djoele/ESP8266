@@ -38,11 +38,14 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   EEPROM.commit();
 } 
 
+#ifdef DEBUG
 void crashme(){
   int* i = NULL;
   *i = 80;
 }
+#endif
 
+#ifdef DEBUG
 void crashme2(){
   char *svptr = NULL;
   static char* str_input = NULL;
@@ -53,3 +56,4 @@ void crashme2(){
   memset(str_input, '\0', 0);
   strcpy(str_input, input);  
 }
+#endif

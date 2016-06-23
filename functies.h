@@ -22,21 +22,7 @@ void connectWifi() {
   Serial.println(WiFi.localIP());
   ip = WiFi.localIP();
   ipadres = DisplayAddress(ip);
-  //disconnected = 0;
 }
-
-void reconnectWifi() {
-  #ifdef DEBUG
-  Serial.println(String("[WIFI] Reconnect Wifi getriggered"));
-  #endif
-  WiFi.begin(ssid, password);
-}
-
-//void onDisconnected(const WiFiEventStationModeDisconnected& event)
-  //  {
-    //    disconnected = 1;
-    //    reconnectWifi();
-   // }
 
 void callURL2(String url, String host, const int port) {
   HTTPClient * http = new HTTPClient();
