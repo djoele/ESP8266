@@ -160,6 +160,15 @@ void setup() {
     #endif
     ESP.reset();
   });
+  server.on("/update_water", HTTP_POST, [](){
+    if(!server.authenticate(www_username, www_password))
+      return server.requestAuthentication();
+    server.send(200, "text/plain", "Login Succes, updating water..");    
+    #ifdef DEBUG
+      serverClient.println(F("[SHA] Login Succes, updating water.."));
+    #endif 
+    counter1 = atoi(server.arg("value").c_str());
+  });
   server.begin();
 
   reset = loadResetInfo();
