@@ -6,10 +6,6 @@ void ICACHE_RAM_ATTR pinupGas() {
   gaspuls = 1;
 }
 
-void ICACHE_RAM_ATTR telFlips() {
-  flips++;
-}
-
 void ICACHE_RAM_ATTR pulsetaskwater() {
   waardenu = digitalRead(pinWater);
   if (waardenu > waarde || waardenu < waarde) {

@@ -61,7 +61,6 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(pinEnergie), pinupEnergie, FALLING);
 
   pinMode(pinWater, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(pinWater), telFlips, FALLING);
   waarde = digitalRead(pinWater);
   waardenu = waarde;
   triggertijd = now();
@@ -160,15 +159,6 @@ void setup() {
     #endif
     ESP.reset();
   });
-  server.on("/update_water", HTTP_POST, [](){
-    if(!server.authenticate(www_username, www_password))
-      return server.requestAuthentication();
-    server.send(200, "text/plain", "Login Succes, updating water..");    
-    #ifdef DEBUG
-      serverClient.println(F("[SHA] Login Succes, updating water.."));
-    #endif 
-    counter1 = atoi(server.arg("value").c_str());
-  });
   server.begin();
 
   reset = loadResetInfo();
@@ -209,14 +199,7 @@ void loop() {
     tijdsduur2 = triggernu - triggertijd;
     #ifdef DEBUG
       serverClient.println(String("[PULS] Tijdsduur tot vorige waterpuls: ") + tijdsduur2);
-      serverClient.println(String("[FLIPS] Aantal flips sinds vorige waterpuls: ") + flips);
-      serverClient.println(String("[FLIPS] Aantal flips per seconde sinds vorige waterpuls: ") + flips/tijdsduur2);
     #endif
-    String flipje = String("/log_flips?flips=") + flips;
-    callURL2(flipje, host, httpsPort);
-    
-    flipje = String("/log_flips_secs?flips=") + flips/tijdsduur2 + "&secs=" + tijdsduur2;
-    callURL2(flipje, host, httpsPort);
     
     if (tijdsduur2 > 1) {
       counter1++;
@@ -226,7 +209,6 @@ void loop() {
     }  
     triggertijd = now();
     waterpuls = 0;
-    flips = 0;
   }
   Alarm.delay(1000);
 }
