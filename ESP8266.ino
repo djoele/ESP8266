@@ -157,7 +157,7 @@ void setup() {
     #ifdef DEBUG
     serverClient.println(String("[SHA] Gelezen sha uit file na update: ") + shavalue);
     #endif
-    ESP.reset();
+    ESP.restart();
   });
   server.begin();
 
