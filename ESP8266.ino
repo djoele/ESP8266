@@ -1,4 +1,5 @@
-//#define DEBUG
+#define DEBUG
+//#define DEBUG2
 #include <EEPROM.h>
 #include <FS.h>
 #include <ESP8266WiFi.h>
@@ -25,20 +26,17 @@ void setup() {
     Serial.setDebugOutput(true);
   #endif
   
-  EEPROM.begin(EEPROM_MAX_ADDR);
+  EEPROM.begin(2000);
   SPIFFS.begin();
   
   version = readFile("/md5.txt");
   strcpy(md5value, version.c_str());
-  #ifdef DEBUG
-    Serial.println(String("[MD5] Gelezen md5: ") + md5value);
-  #endif
-
+  
   sha = readFile("/sha.txt");
   fingerprint = sha.c_str();
   strcpy(shavalue, sha.c_str());
   #ifdef DEBUG
-    Serial.println(String("[SHA] Gelezen sha: ") + shavalue);
+    Serial.println(String("[MD5] Gelezen md5: ") + md5value + "\n[SHA] Gelezen sha: " + shavalue);
   #endif
   
   memset(unameenc,0,sizeof(unameenc));
@@ -50,8 +48,6 @@ void setup() {
     Serial.print(F("[WIFI] Verbonden met Wifi."));
   #endif
    
-  //FOR RESET eerst alleen saveValues, daarna die uit en dan weer determineStartValues
-  //saveValues();
   determineStartValues();
   
   pinMode(pinGas, INPUT_PULLUP);
@@ -71,6 +67,7 @@ void setup() {
   Alarm.timerRepeat(350, uploadGas);
   Alarm.timerRepeat(30, saveValues);
   Alarm.timerRepeat(60, uploadHeap);
+  Alarm.timerRepeat(60, reconnectWifi);
 
   #ifdef DEBUG
     telnetServer.begin();
@@ -89,7 +86,13 @@ void setup() {
     server.send(200, "text/plain", "ESP8266 gaat resetten..");
     ESP.reset();
   });
-  #ifdef DEBUG
+  server.on("/resetvalues", [](){
+    if(!server.authenticate(www_username, www_password))
+      return server.requestAuthentication();
+    server.send(200, "text/plain", "ESP8266 gaat values resetten naar [0 0 0]");
+    resetStartValues();
+  });
+  #ifdef DEBUG2
   server.on("/crash", [](){
     if(!server.authenticate(www_username, www_password))
       return server.requestAuthentication();
@@ -134,12 +137,16 @@ void setup() {
   server.on("/stack", [](){
     if(!server.authenticate(www_username, www_password))
       return server.requestAuthentication();
-    server.send(200, "text/plain", stack);
+      server.send(200, "text/plain", loadStack());
   });
   server.on("/resetinfo", [](){
     if(!server.authenticate(www_username, www_password))
       return server.requestAuthentication();
-    server.send(200, "text/plain", reset);
+    server.send(200, "text/plain", ESP.getResetInfo());
+    //Nu hebben we de stack trace ook echt verstuurd
+    error_sent = 1;
+    eeprom_erase_all();
+    EEPROM.commit();
   });
   server.on("/update_sha", HTTP_POST, [](){
     if(!server.authenticate(www_username, www_password))
@@ -161,12 +168,6 @@ void setup() {
   });
   server.begin();
 
-  reset = loadResetInfo();
-  stack = loadStack();
-  #ifdef DEBUG
-    Serial.println(String("[RESET] Gelezen reset uit eeprom: ") + reset);
-    Serial.println(String("[STACK] Gelezen stack uit eeprom: ") + stack);
-  #endif
   triggerStack();
 }
 
@@ -175,14 +176,15 @@ void loop() {
   #ifdef DEBUG
     handleTelnet();
   #endif
-  if (energiepuls == 1){
+  if (energiepuls == 2){
     energiepuls = 0;
-    counter++;
+    counter = counter + 1;
     pulsetijd = now();
     tijdsduur = pulsetijd - begintijd;
     begintijd = pulsetijd;
-    huidigverbruik = floor(3600 / tijdsduur);
-    #ifdef DEBUG
+    //2000 pulsen per kWh -> dus nog halveren om te laten kloppen
+    huidigverbruik = floor(3600 / tijdsduur / 2);
+    #ifdef DEBUG 
       serverClient.println(String("[PULS] Energiepuls: ") + huidigverbruik);
     #endif
   }

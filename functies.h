@@ -24,6 +24,12 @@ void connectWifi() {
   ipadres = DisplayAddress(ip);
 }
 
+void reconnectWifi() {
+  if (WiFi.status() != WL_CONNECTED) {
+    WiFi.begin(ssid, password);
+  }
+}
+
 void callURL2(String url, String host, const int port) {
   HTTPClient * http = new HTTPClient();
   http->begin(host, port, url, fingerprint);
@@ -76,8 +82,17 @@ void determineStartValues() {
   #endif
 }
 
+void resetStartValues() {
+  if(SPIFFS.exists("/values.txt")){
+    SPIFFS.remove("/values.txt");
+    ESP.restart();
+  }
+}
+  
 void triggerStack(){
-    callURL2(trigger_stack, host, httpsPort);  
+  if (error_sent == 0){
+    callURL2(trigger_stack, host, httpsPort);
+  }  
 }
 
 void uploadValueToDomoticz(int id, const char* updateString2, const char* type, int value, int value2) {
@@ -97,9 +112,7 @@ void uploadWater() {
 }
 
 void uploadEnergie1() {
-  if (huidigverbruik > 0 and huidigverbruik < 3000){
     uploadValueToDomoticz(ID4, updateElectricityOrText, type4, huidigverbruik, counter);
-  }
 }
 
 void  uploadEnergie2() {
@@ -117,22 +130,13 @@ void uploadHeap() {
 
 String loadStack(){
   String stack = "";
-  eeprom_read_string(0, buf, EEPROM_MAX_ADDR);
-  eeprom_erase_all();
-  EEPROM.commit();
+  eeprom_read_string(0, buf, 2000);
 
-   //stack should start with ctx, otherwise there is no stack
+  //stack should start with ctx, otherwise there is no stack
   if (buf[0]=='c'){
     stack = String(buf);
   }
   return stack;
-}
-
-String loadResetInfo(){
-  String reset;
-
-  reset = ESP.getResetInfo();
-  return reset;
 }
 
 #ifdef DEBUG

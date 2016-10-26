@@ -14,9 +14,6 @@ String readFile(String pad) {
 void saveValues() {
   File values = SPIFFS.open("/values.txt", "w+");
   if (!values) {
-    #ifdef DEBUG
-    Serial.println(F("[VALUES] Error: schrijven van values in niet gelukt..."));
-    #endif
     return;
   }
   values.println(String("") + counter + " " + counter1 + " " + counter2); 

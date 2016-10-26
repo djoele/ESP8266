@@ -7,15 +7,12 @@ const int pinEnergie = 5;
 const int pinGas = 14;
 const int pinWater = 12;
 
-const String host = "framboos-domotica.tk";
+const String host = "framboos-master.nl";
 const int httpsPort = 443;
 
-const int EEPROM_MIN_ADDR = 0;
-const int EEPROM_MAX_ADDR = 4096;
-char buf[EEPROM_MAX_ADDR];
+char buf[2000];
 char buf2[2000];
-String stack;
-String reset;
+int error_sent = 0;
 
 String version;
 char md5value[32] = "empty";
@@ -23,10 +20,10 @@ String sha;
 char shavalue[60] = "";
 const char * fingerprint;
 
-const char* updateurl = "https://framboos-domotica.tk:443/update_esp8266";
-const char* trigger_stack = "https://framboos-domotica.tk:443/trigger_stack";
+const char* updateurl = "https://framboos-master.nl:443/update_esp8266";
+const char* trigger_stack = "https://framboos-master.nl:443/trigger_stack";
 const char* ssid = "VGV7519B5207C";
-const char* password = "Wachtwoord";
+const char* password = "YmgH334fLyNB";
 const char* www_username = "djoele";
 const char* www_password = "@jP6Aq03";
 

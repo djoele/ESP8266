@@ -33,19 +33,22 @@ extern "C" void custom_crash_callback(struct rst_info * rst_info, uint32_t stack
   sprintf(buf2 + strlen(buf2), "sp: %08x end: %08x offset: %04x\n", stack, stack_end, offset);
   getStack(stack, stack_end);
 
-  eeprom_erase_all();
-  eeprom_write_string(0, buf2);
-  EEPROM.commit();
+  //Stacktrace alleen overschrijven als de vorige wel opgehaald is
+  if (error_sent == 1){
+    eeprom_erase_all();
+    eeprom_write_string(0, buf2);
+    EEPROM.commit();
+  }
 } 
 
-#ifdef DEBUG
+#ifdef DEBUG2
 void crashme(){
   int* i = NULL;
   *i = 80;
 }
 #endif
 
-#ifdef DEBUG
+#ifdef DEBUG2
 void crashme2(){
   char *svptr = NULL;
   static char* str_input = NULL;
