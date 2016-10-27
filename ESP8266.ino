@@ -214,5 +214,5 @@ void loop() {
     triggertijd = now();
     waterpuls = 0;
   }
-  Alarm.delay(1000);
+  Alarm.delay(500);
 }
