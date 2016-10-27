@@ -1,10 +1,5 @@
 void ICACHE_RAM_ATTR pinupEnergie() {
-  if (energiepuls == 0){
-    energiepuls = 1;
-  }
-  if (energiepuls == 1){
-    energiepuls = 2;
-  }
+  energiepuls = 1;
 }
 
 void ICACHE_RAM_ATTR pinupGas() {
