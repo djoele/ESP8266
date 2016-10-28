@@ -178,7 +178,7 @@ void loop() {
   #endif
   if (energiepuls > 0){
     //counter ophogen met het aantal getelde energiepulsen
-    //dan bij versturen delen door 2 en afronden naar beneden
+    //dan bij versturen delen door 2
     //want er zitten 2000 pulsen in een kWh
     counter = counter + energiepuls;
     pulsetijd = now();
@@ -186,7 +186,7 @@ void loop() {
     begintijd = pulsetijd;
     //huidig verbruik wel hier corrigeren
     //tel het aantal pulsen sinds de vorige loop en dan delen door 2 vanwege 2000 pulsen in een kWh
-    huidigverbruik = floor(energiepuls * 3600 / tijdsduur / 2);
+    huidigverbruik = energiepuls * 3600 / tijdsduur / 2;
     #ifdef DEBUG 
       serverClient.println(String("[PULS] Energiepuls: ") + huidigverbruik);
     #endif
