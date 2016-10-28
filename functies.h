@@ -112,11 +112,11 @@ void uploadWater() {
 }
 
 void uploadEnergie1() {
-    uploadValueToDomoticz(ID4, updateElectricityOrText, type4, huidigverbruik, counter);
+    uploadValueToDomoticz(ID4, updateElectricityOrText, type4, huidigverbruik, counter/2);
 }
 
 void  uploadEnergie2() {
-  uploadValueToDomoticz(ID, updateElectricityOrText, type, counter, -1);
+  uploadValueToDomoticz(ID, updateElectricityOrText, type, counter/2, -1);
 }
 
 void uploadHeap() {
