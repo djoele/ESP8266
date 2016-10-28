@@ -1,5 +1,5 @@
 void ICACHE_RAM_ATTR pinupEnergie() {
-  energiepuls = 1;
+  energiepuls++;
 }
 
 void ICACHE_RAM_ATTR pinupGas() {
