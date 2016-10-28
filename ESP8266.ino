@@ -176,19 +176,21 @@ void loop() {
   #ifdef DEBUG
     handleTelnet();
   #endif
-  if (energiepuls == 1){
-    energiepuls = 0;
-    counter = counter + 1;
+  if (energiepuls > 0){
+    //counter ophogen met het aantal getelde energiepulsen
+    //dan bij versturen delen door 2 en afronden naar beneden
+    //want er zitten 2000 pulsen in een kWh
+    counter = counter + energiepuls;
     pulsetijd = now();
     tijdsduur = pulsetijd - begintijd;
     begintijd = pulsetijd;
-    //2000 pulsen per kWh
-    //counter gewoon iedere keer met 1 ophogen, Domoticz dan laten corrigeren
-    //huidigverbruik wel hier corrigeren
-    huidigverbruik = floor(3600 / tijdsduur / 2);
+    //huidig verbruik wel hier corrigeren
+    //tel het aantal pulsen sinds de vorige loop en dan delen door 2 vanwege 2000 pulsen in een kWh
+    huidigverbruik = floor(energiepuls * 3600 / tijdsduur / 2);
     #ifdef DEBUG 
       serverClient.println(String("[PULS] Energiepuls: ") + huidigverbruik);
     #endif
+    energiepuls = 0;
   }
   if (gaspuls == 1){
     gaspuls = 0;
