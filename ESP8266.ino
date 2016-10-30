@@ -192,12 +192,12 @@ void loop() {
     #endif
     energiepuls = 0;
   }
-  if (gaspuls == 1){
-    gaspuls = 0;
-    counter2++;
+  if (gaspuls > 0){
+    counter2 = counter2 + gaspuls;
     #ifdef DEBUG
       serverClient.println(String("[PULS] Gaspuls: ") + counter2);
     #endif
+    gaspuls = 0;
   }
   pulsetaskwater();
   if (waterpuls == 1){
