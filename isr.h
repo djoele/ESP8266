@@ -3,7 +3,7 @@ void ICACHE_RAM_ATTR pinupEnergie() {
 }
 
 void ICACHE_RAM_ATTR pinupGas() {
-  gaspuls = 1;
+  gaspuls = gaspuls++;
 }
 
 void ICACHE_RAM_ATTR pulsetaskwater() {
