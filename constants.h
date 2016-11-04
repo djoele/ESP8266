@@ -80,3 +80,5 @@ WiFiClient serverClient;
 ESP8266WebServer server(80);
 IPAddress ip;
 String ipadres;
+
+int error_count = 0;
