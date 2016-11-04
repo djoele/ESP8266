@@ -216,5 +216,8 @@ void loop() {
     triggertijd = now();
     waterpuls = 0;
   }
+  if (error_count == 3){
+   ESP.restart(); 
+  }
   Alarm.delay(1000);
 }
