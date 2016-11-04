@@ -37,6 +37,12 @@ void callURL2(String url, String host, const int port) {
   http->addHeader("X-ESP8266-IP", ipadres);
 
   int httpCode = http->GET();
+  if (httpCode == -1){
+    error_count++;
+  else {
+    error_count = 0;
+  }
+  }
   #ifdef DEBUG    
     serverClient.println((String("[HTTP] url: ") + url + ", return code: " + httpCode));
     Serial.println((String("[HTTP] url: ") + url + ", return code: " + httpCode));
