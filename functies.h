@@ -7,14 +7,7 @@ String DisplayAddress(IPAddress address)
 }
 
 void connectWifi() {
-  #ifdef DEBUG
-  Serial.println(String("[WIFI] ssid: ") + ssid);
-  Serial.println(String("[WIFI] password: ") + password);
-  #endif
   WiFi.begin(ssid, password);
-  #ifdef DEBUG
-  Serial.print(F("[WIFI] Verbinden met Wifi"));
-  #endif
   while (WiFi.status() != WL_CONNECTED) {
     delay(1);
   }
@@ -37,15 +30,8 @@ void callURL2(String url, String host, const int port) {
   http->addHeader("X-ESP8266-IP", ipadres);
 
   int httpCode = http->GET();
-  if (httpCode == -1){
-    error_count++;
-  else {
-    error_count = 0;
-  }
-  }
   #ifdef DEBUG    
     serverClient.println((String("[HTTP] url: ") + url + ", return code: " + httpCode));
-    Serial.println((String("[HTTP] url: ") + url + ", return code: " + httpCode));
   #endif
   http->end();
   http->~HTTPClient();
@@ -54,43 +40,22 @@ void callURL2(String url, String host, const int port) {
                
 void determineStartValues() {
   if(!SPIFFS.exists("/values.txt")){
-    #ifdef DEBUG
-    Serial.println(F("[VALUES] values.txt bestaat niet"));
-    #endif
     saveValues();
   }
   String bufferin = readFile("/values.txt");
-  #ifdef DEBUG
-  Serial.println("[VALUES] Bufferin: " + bufferin);
-  #endif
   char buffer[1024];
   strcpy(buffer,bufferin.c_str());
   char *p;
   p = strtok (buffer, " ");
-  int teller = 0;
-  while (p != NULL && teller < 3)
-  {
-    if (teller == 0) {
-      counter = atoi(p);
-    }
-    if (teller == 1) {
-      counter1 = atoi(p);
-    }
-    if (teller == 2) {
-      counter2 = atoi(p);
-    }
-    p = strtok (NULL, " ");
-    teller = teller + 1;
-    delay(5);
-  }
-  #ifdef DEBUG
-  Serial.println(String("[VALUES] Gelezen values op basis van bufferin: ") + counter + " " + counter1 + " " + counter2);
-  #endif
+  counter = atoi(p);
+  Serial.println((String("[VALUE] counter: ") + counter));
 }
 
-void resetStartValues() {
+void resetStartValues(int reset) {
   if(SPIFFS.exists("/values.txt")){
     SPIFFS.remove("/values.txt");
+    counter = reset;
+    saveValues();
     ESP.restart();
   }
 }
@@ -109,36 +74,13 @@ void uploadValueToDomoticz(int id, const char* updateString2, const char* type, 
   callURL2(url, host, httpsPort);
 }
 
-void uploadGas() {
-  uploadValueToDomoticz(ID2, updateCounter, type2, counter2, -1);
-}
-
-void uploadWater() {
-  uploadValueToDomoticz(ID1, updateCounter, type1, counter1, -1);
-}
-
-void uploadEnergie1() {
-    uploadValueToDomoticz(ID4, updateElectricityOrText, type4, huidigverbruik, counter/2);
-}
-
-void  uploadEnergie2() {
-  uploadValueToDomoticz(ID, updateElectricityOrText, type, counter/2, -1);
-}
-
-void uploadHeap() {
-  uint32_t heapnu = ESP.getFreeHeap();
-  float perc = ((float)heapnu/(float)heap)*100;
-  #ifdef DEBUG
-    serverClient.println(String("[HEAP] FreeHeap : ") + ESP.getFreeHeap() + ", " + perc + "%");
-  #endif
-  uploadValueToDomoticz(ID5, updateElectricityOrText, type, perc, -1);
+void uploadWater() {  
+  uploadValueToDomoticz(ID1, updateCounter, type1, counter, -1);
 }
 
 String loadStack(){
   String stack = "";
   eeprom_read_string(0, buf, 2000);
-
-  //stack should start with ctx, otherwise there is no stack
   if (buf[0]=='c'){
     stack = String(buf);
   }
@@ -153,12 +95,13 @@ void handleTelnet(){
         serverClient.stop();
       }
       serverClient = telnetServer.available();
-      serverClient.flush();  // clear input buffer, else you get strange characters 
+      serverClient.print("");
+      serverClient.flush();
     }
   }
-  if (millis() - startTimeWifi > 2000) { // run every 2000 ms
+  if (millis() - startTimeWifi > 2000) {
     startTimeWifi = millis();
   }
-  delay(10);  // to avoid strange characters left in buffer
+  delay(10);  
 }
 #endif

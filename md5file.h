@@ -16,7 +16,7 @@ void saveValues() {
   if (!values) {
     return;
   }
-  values.println(String("") + counter + " " + counter1 + " " + counter2); 
+  values.println(counter); 
   values.close();
 }
 
