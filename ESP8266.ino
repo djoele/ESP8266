@@ -108,7 +108,14 @@ void setup() {
   triggerStack();
 }
 
+
 void loop() { 
+  trigger_nu = now();
+  tijdsduur = trigger_nu - trigger_begin;
+  #ifdef DEBUG
+      serverClient.println(String("[DUUR] Tijdsduur geen puls gezien: ") + tijdsduur);
+    #endif
+  
   #ifdef DEBUG
     server.handleClient();
     handleTelnet();
@@ -121,6 +128,7 @@ void loop() {
       serverClient.println(String("[PULS] Waterpuls gedetecteerd: ") + counter);
     #endif
     waterpuls = 0;
+    trigger_begin = now();
   }
   Alarm.delay(1000);
 }

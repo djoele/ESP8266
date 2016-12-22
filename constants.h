@@ -35,6 +35,9 @@ volatile int counter = 0;
 const int ID1 = 12;
 const char* type1 = "Water";
 int waterpuls = 0;
+time_t trigger_begin = now();
+time_t trigger_nu;
+time_t tijdsduur;
 
 //Water variabelen
 int waarde;
