@@ -112,9 +112,9 @@ void setup() {
 void loop() { 
   trigger_nu = now();
   tijdsduur = trigger_nu - trigger_begin;
-  #ifdef DEBUG
-      serverClient.println(String("[DUUR] Tijdsduur geen puls gezien: ") + tijdsduur);
-    #endif
+  //#ifdef DEBUG
+      //serverClient.println(String("[DUUR] Tijdsduur geen puls gezien: ") + tijdsduur);
+    //#endif
   
   #ifdef DEBUG
     server.handleClient();

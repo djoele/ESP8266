@@ -79,12 +79,6 @@ void uploadWater() {
   {
     uploadValueToDomoticz(ID1, updateCounter, type1, counter, -1);
   } 
-  else
-  {
-     #ifdef DEBUG    
-        serverClient.println((String("[HTTP]: geen upload want tijdsduur geen puls gezien is te kort")));
-    #endif
-  }
 }
 
 String loadStack(){
