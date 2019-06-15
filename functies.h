@@ -10,6 +10,7 @@ void connectWifi() {
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(1);
+    Serial.println((String("Connecting...")));
   }
   Serial.print(String("[WIFI] IP: "));
   Serial.println(WiFi.localIP());
@@ -32,6 +33,7 @@ void callURL2(String url, String host, const int port) {
   int httpCode = http->GET();
   #ifdef DEBUG    
     serverClient.println((String("[HTTP] url: ") + url + ", return code: " + httpCode));
+    Serial.print(String("[HTTP] url: ") + url + ", return code: " + httpCode);
   #endif
   http->end();
   http->~HTTPClient();
@@ -75,7 +77,7 @@ void uploadValueToDomoticz(int id, const char* updateString2, const char* type, 
 }
 
 void uploadWater() {  
-  if (tijdsduur > 180)
+  if (tijdsduur > 60)
   {
     uploadValueToDomoticz(ID1, updateCounter, type1, counter, -1);
   } 
